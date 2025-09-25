@@ -45,3 +45,29 @@ gfortran -O3 -o HBB/hbb HBB/hb4.f
 bash HBB/run.drive
 python HBB/compile.py
 ```
+
+## RING_ANGLE — Cyclodextrin Ring Orientation/Spacing
+
+Fortran 95 tool to compute cyclodextrin ring orientation and spacing statistics.
+
+- `RING_ANGLE/ring_angle.f` — computes cos(θ) histograms (ring normals vs macro COM), and d12–d15 COM–COM distance histograms with summaries.
+
+**Build**
+
+```bash
+gfortran -O3 -o RING_ANGLE/ring_angle RING_ANGLE/ring_angle.f
+```
+
+**Inputs**
+
+- `drive`: `ntot`, `nframes`, optional `[nskip]`, `[stride]`
+
+- `vol`: `NMON`, optional `CHUNK_RING` (default 6), then RING indices (6 heavy atoms per monomer)
+
+- **stdin**: frames: title line, then `x y z ... bx by bz`
+
+**Outputs**
+
+- `cos_theta_hist.out`, `cos_theta_summary.out`
+
+- `d12_hist.out .. d15_hist.out`, `d_summary.out`
