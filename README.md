@@ -20,3 +20,28 @@ See comments in `janal.f` for formats.
 - Implements test particle insertion (TPI) for LJ and WCA inside pockets
 - Computes H-bond distributions inside/outside the pocket
 - Generalized across different cavity volumes
+
+## HBB — Hydrogen-Bond Analysis
+
+This module quantifies hydrogen bonding in supramolecular host systems.
+
+- `HBB/hb4.f` — Fortran analysis of water–water, water–host, and host–water H-bonds, including *bridging waters* (one water H-bonded to two different host acceptors).
+
+- `HBB/run.drive` — Driver script to run the HBB workflow end-to-end on trajectories/coordinate files.
+
+- `HBB/compile.py` — Python script that compiles HBB outputs into aggregated statistics (averages, variances, distributions) for downstream plotting.
+
+
+**Build**
+
+```bash
+gfortran -O3 -o HBB/hbb HBB/hb4.f
+```
+
+
+**Usage**
+
+```bash
+bash HBB/run.drive
+python HBB/compile.py
+```
