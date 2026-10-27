@@ -19,10 +19,12 @@ APPROVED_DATA_FILES = {
     "data/derived/betacd_cluster_bootstrap_sem.tsv",
     "data/derived/drying_transition_analysis.xlsx",
     "data/derived/occupancy_moments.xlsx",
+    "data/derived/pn_fattail_fits.xlsx",
 }
 REQUIRED_DATA_FILES = APPROVED_DATA_FILES - {
     "data/derived/drying_transition_analysis.xlsx",
     "data/derived/occupancy_moments.xlsx",
+    "data/derived/pn_fattail_fits.xlsx",
 }
 TEXT_SUFFIXES = {".f", ".jl", ".md", ".py", ".sh", ".toml", ".txt", ".yml"}
 PRIVATE_MARKERS = ("/Users/", "Box-Box", "Miscellaneous disorganization")

@@ -223,8 +223,8 @@ figure = plot(
     margin = 1.5Plots.mm,
 )
 
-savefig(figure, joinpath(OUTPUT_DIR, "spatial_maps.pdf"))
-savefig(figure, joinpath(OUTPUT_DIR, "spatial_maps.svg"))
-savefig(figure, joinpath(OUTPUT_DIR, "spatial_maps.png"))
+savefig(figure, joinpath(OUTPUT_DIR, "figure4_spatial_maps.pdf"))
+savefig(figure, joinpath(OUTPUT_DIR, "figure4_spatial_maps.svg"))
+savefig(figure, joinpath(OUTPUT_DIR, "figure4_spatial_maps.png"))
 
 println("Wrote spatial maps to: ", OUTPUT_DIR)

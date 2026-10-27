@@ -12,6 +12,7 @@ All checked-in workbooks are compact, processed inputs for the three disclosed m
 | `data/processed/unbiased_occupancy.xlsx` | Unbiased reference occupancy values | supporting analysis |
 | `data/derived/water_occupancy_by_host.xlsx` | Host-level temperature/occupancy summary | `analysis/temperature_response/` |
 | `data/derived/*_cluster_bootstrap_sem.tsv` | Cluster-bootstrap occupancy standard errors | `analysis/occupancy/` |
+| `data/derived/pn_fattail_fits.xlsx` | Generated audit of wet-basin quadratic fits and low-occupancy enhancement | `analysis/occupancy_distributions/` |
 
 ## Units
 
@@ -23,4 +24,4 @@ All checked-in workbooks are compact, processed inputs for the three disclosed m
 
 ## Generated outputs
 
-`data/derived/drying_transition_analysis.xlsx` and `data/derived/occupancy_moments.xlsx` are optional generated outputs accepted by the publication-boundary check. Review them before committing if the numerical analysis changes.
+`data/derived/drying_transition_analysis.xlsx`, `data/derived/occupancy_moments.xlsx`, and `data/derived/pn_fattail_fits.xlsx` are generated outputs accepted by the publication-boundary check. Review them before committing if the numerical analysis changes.

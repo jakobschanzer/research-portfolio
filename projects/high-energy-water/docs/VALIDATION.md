@@ -18,6 +18,8 @@ It also runs a publication-boundary check that permits only the reviewed process
 - The spatial-map bulk hydrogen-bond references are three documented scalars extracted from the corresponding 25 °C production workbooks.
 - Occupancy-transition widths are written to a derived audit workbook with definitions and uncertainty assumptions.
 - OA occupancy alignment is exported as an audit sheet so plotted coordinates can be compared with tabulated means.
+- Figure 6 uses one explicit coordinate convention: negative `z` is left and positive `z` is right. CB7 and OA use the positive-`z` approach; β-CD shows its negative- and positive-portal branches on their corresponding sides.
+- Wet-basin quadratic fits and enhanced low-occupancy points in Figure 6 are exported to `data/derived/pn_fattail_fits.xlsx` for numerical audit.
 - Generated plots use redundant markers/line styles and grayscale-compatible encodings.
 
 ## Known limitations
@@ -26,4 +28,3 @@ It also runs a publication-boundary check that permits only the reviewed process
 - The checked-in volume backend has no matching production `vol` input in the archive used to curate this repository; it is compiled and documented, but a host assignment is not guessed.
 - Cross-bin covariance was unavailable for drying-transition uncertainty propagation.
 - The manuscript is in preparation; numerical conclusions remain subject to author review.
-

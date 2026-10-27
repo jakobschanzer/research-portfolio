@@ -191,7 +191,7 @@ p2=nz_panel(oa_curve.z,oa_curve.mean,oa_curve.sem,"OA","b",(-3,11),-2:2:10,oa_ba
 p3=nz_panel(cd.z,cd.mean,cd_sem,"restrained β-CD","c",(-10,10),-10:5:10,cd_bands)
 nz=plot(p1,p2,p3;layout=(1,3),size=(1800,560),dpi=600,
     left_margin=6Plots.mm,right_margin=5Plots.mm,bottom_margin=7Plots.mm,top_margin=5Plots.mm)
-for ext in ("png","pdf","svg"); savefig(nz,joinpath(OUTPUT_DIR,"mean_occupancy_vs_z.$ext")); end
+for ext in ("png","pdf","svg"); savefig(nz,joinpath(OUTPUT_DIR,"figure5_mean_occupancy_vs_z.$ext")); end
 
 letters=[string(Char('a'+i)) for i in 0:25]
 function distribution_figure(data,selected,host;logscale=false,layout=(3,4),stem="",display_z=Dict{Float64,Float64}())

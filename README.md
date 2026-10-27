@@ -6,7 +6,7 @@ This private portfolio highlights scientific computing across statistical mechan
 
 ## Featured project: water in molecular cavities
 
-[![Host systems: CB7, OA, and beta-cyclodextrin](projects/high-energy-water/figures/host_systems.png)](projects/high-energy-water/README.md)
+[![Host systems: CB7, OA, and beta-cyclodextrin](projects/high-energy-water/figures/figure1_host_systems.png)](projects/high-energy-water/README.md)
 
 ### Does molecular confinement create “high-energy” water?
 

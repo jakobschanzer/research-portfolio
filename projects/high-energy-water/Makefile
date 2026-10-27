@@ -31,6 +31,7 @@ figures:
 	$(JULIA) --project=. analysis/pmf_decomposition/make_figure.jl
 	$(JULIA) --project=. analysis/spatial_maps/make_figure.jl
 	$(JULIA) --project=. analysis/occupancy/make_figures.jl
+	$(JULIA) --project=. analysis/occupancy_distributions/make_figure.jl
 	$(JULIA) --project=. analysis/temperature_response/make_figure.jl
 
 clean:

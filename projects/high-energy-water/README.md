@@ -3,35 +3,104 @@
 **A computational study of hydration thermodynamics and collective drying in CB7, OA, and β-cyclodextrin**  
 Jakob L. Schanzer · manuscript in preparation
 
-![Spatial density, hydrogen-bond, and enthalpy maps](figures/spatial_maps.png)
+## The scientific question
 
-## The question
+A common model of molecular recognition proposes that confinement creates energetically unfavorable—or “high-energy”—water and that releasing this water drives guest binding. This work separates two ideas that are often conflated:
 
-Water release is often invoked as a universal explanation for strong host–guest binding: confinement supposedly creates energetically unfavorable, or “high-energy,” water that is expelled when a guest enters. This project asks whether that picture survives direct, spatially resolved thermodynamic analysis.
+1. **Energetics:** are the waters that actually occupy a cavity unfavorable relative to bulk?
+2. **Drying:** does an approaching guest induce a collective transition between wet and dry cavity states?
 
-The answer is **no—not as a general rule**. Across the three manuscript hosts, populated hydration sites are on average enthalpically stabilized relative to bulk water. Rigid, hydrophobic cavities can still undergo sharp collective drying as a guest approaches, but a drying transition does not by itself establish a favorable high-energy-water release mechanism.
+The simulations show that **collective drying is real for CB7 and OA, but it is not evidence that their resident cavity waters were high in energy**. Restrained β-CD provides the contrasting case: it loses water gradually rather than through a comparable two-state transition.
 
-## Results at a glance
+## The manuscript story, figure by figure
 
-### Binding thermodynamics separate direct and solvent-mediated forces
+### Figure 1 — Three cavities with different architectures
 
-![PMF and force decomposition](figures/pmf_decomposition.png)
+![Representative structures of OA, restrained beta-cyclodextrin, and CB7](figures/figure1_host_systems.png)
 
-The potential of mean force is decomposed into direct host–guest and solvent-mediated contributions. At 298 K, the approximate PMF minima are −110.4 kJ mol⁻¹ for CB7, −56.5 kJ mol⁻¹ for OA, and −31.9 kJ mol⁻¹ for restrained β-CD. The balance of enthalpy and entropy differs substantially across hosts, demonstrating that similar language about “water release” can conceal different physical mechanisms.
+OA, restrained β-CD, and CB7 differ in shape, portal geometry, flexibility, and symmetry. Those architectural differences let us test which hydration behavior is general and which depends on the physical character of the pocket.
 
-### Drying can be collective or gradual
+### Figure 2 — Favorable binding does not require a favorable solvent contribution
 
-![Mean cavity occupancy along the binding coordinate](figures/mean_occupancy_vs_z.png)
+![PMF thermodynamic and direct-residual decomposition](figures/figure2_pmf_decomposition.png)
 
-CB7 and OA exhibit narrow spatial transitions between wet and dry cavity states, with 25–75% transition widths of approximately 0.92 Å and 0.61 Å. Restrained β-CD dries more gradually and asymmetrically (approximately 2.21 Å and 1.19 Å at its two portals). These are equilibrium changes along a binding coordinate—not kinetic drying rates.
+The top row decomposes the potential of mean force into enthalpic and entropic terms; the bottom row compares the PMF with the direct host–guest interaction and the operational non-direct residual.
 
-### Temperature perturbs hydrogen bonding and occupancy
+- CB7 binds almost entirely enthalpically, and its direct host–guest interaction nearly reproduces the PMF.
+- OA is also enthalpy dominated, but its residual opposes binding near the minimum.
+- Restrained β-CD is the key counterexample: substantial water displacement accompanies favorable binding without a favorable binding enthalpy. Its residual also opposes binding.
 
-![Temperature-dependent hydrogen bonding and occupancy](figures/temperature_response.png)
+The PMF well depths are approximately −110.4, −56.5, and −31.9 kJ mol⁻¹ for CB7, OA, and restrained β-CD. These are well depths relative to the separated state, not standard-state binding free energies.
 
-From 5 to 95 °C, average cavity populations decrease from about 6.40 to 5.36 waters in CB7, 4.20 to 3.04 in OA, 4.87 to 4.31 in restrained β-CD, and 3.69 to 2.92 in unrestrained β-CD. The joint temperature response distinguishes changes in water population from changes in local hydrogen-bond coordination.
+### Table 1 — Hydrogen-bond deficiency is not a complete energetic model
 
-## What the code does
+![Hydrogen-bond accounting and binding-enthalpy comparison](figures/table1_hydrogen_bond_summary.png)
+
+The hydration partition quantity, 𝒵, and the binding hydrogen-bond balance, δ, quantify water structure, but neither reproduces the full binding enthalpy. Hydrogen-bond counts omit bond-strength heterogeneity, host–water and other water–water interactions, guest desolvation, reorganization, and direct host–guest interactions. A hydrogen-bond deficit therefore cannot by itself establish a population of energetically unfavorable water.
+
+### Figure 3 — Occupied cavity water is enthalpically stabilized on average
+
+![Mean cavity occupancy as a function of temperature](figures/figure3_temperature_response.png)
+
+Mean cavity occupancy decreases from 5 to 95 °C for every host model: approximately 6.40→5.36 waters for CB7, 4.20→3.04 for OA, 4.87→4.31 for restrained β-CD, and 3.69→2.92 for unrestrained β-CD. After accounting for the comparatively small thermal-expansion contribution, the negative temperature slopes imply a negative mean enthalpy for transferring water from bulk into each cavity.
+
+This is the first direct challenge to the high-energy-water picture: **the resident cavity population is lower—not higher—in mean enthalpy than bulk water**.
+
+### Figure 4 — Water occupies stabilized interfacial sites
+
+![Spatial hydrogen-bond, density, and local-enthalpy maps](figures/figure4_spatial_maps.png)
+
+The axial–radial maps show hydrogen-bond deviation from bulk (top), relative density (middle), and fitted local enthalpy (bottom). Dense hydration layers follow the host surfaces and coincide with the lowest local enthalpies. Regions with unfavorable fitted enthalpy have negligible occupancy and therefore do not constitute a substantial resident population available for release.
+
+Some dense, low-enthalpy sites remain deficient in water–water hydrogen bonds. Other interactions—consistent with host–water stabilization—compensate for the missing water–water coordination. Reduced hydrogen bonding is therefore not synonymous with high energy.
+
+### Figure 5 — The guest triggers sharp drying in CB7 and OA
+
+![Mean cavity occupancy along the host-guest binding coordinate](figures/figure5_mean_occupancy_vs_z.png)
+
+Mean occupancy identifies where water leaves as cyclohexane enters. OA passes from 25% to 75% empty over approximately 0.61 Å, and CB7 over 0.92 Å. Restrained β-CD responds more gradually and asymmetrically: approximately 2.21 Å through its negative-*z* narrower primary portal and 1.19 Å through its positive-*z* wider secondary portal.
+
+These widths quantify an equilibrium response to guest position, not a kinetic drying rate. More importantly, a mean curve alone cannot distinguish concerted switching from the sequential loss of independent waters. That distinction requires the complete occupancy distributions.
+
+### Figure 6 — P(N|z) reveals the drying mechanism
+
+![Distance-resolved occupancy and log-probability distributions](figures/figure6_occupancy_distributions.svg)
+
+Each column pairs the conditional occupancy distribution, P(N|*z*), with ln P(N|*z*) as the guest approaches. The schematics use one coordinate convention throughout: **negative *z* is left and positive *z* is right**; red is the host and blue is cyclohexane.
+
+- **CB7:** near the portal, wet and dry populations coexist. Around *z* = 4.0 Å, probability is distributed between states centered near two and four waters, with a less probable intermediate occupancy.
+- **OA:** at *z* = 3.6 Å, a wet maximum near *N* = 4 coexists with a dry *N* = 0 population. By *z* = 3.2 Å the dry state is most probable while the wet basin remains populated.
+- **Restrained β-CD:** the distributions shift progressively toward lower *N* from either portal. Persistent wet/dry coexistence is absent, indicating continuous dehydration rather than the same collective transition.
+
+The dashed red curves extrapolate a quadratic fit to the wet-state basin. Blue points mark low-occupancy probabilities enhanced above that near-Gaussian expectation. These non-Gaussian low-*N* tails develop before the cavity becomes dry and are the fluctuation signature of proximity to a drying transition. They are pronounced for CB7 and OA and develop more weakly and gradually for β-CD.
+
+<details>
+<summary><strong>Open host-specific P(N|z) panels for closer inspection</strong></summary>
+
+#### CB7
+
+![CB7 occupancy distributions](figures/cb7_pn_lnpn_paired.png)
+
+#### OA
+
+![OA occupancy distributions](figures/oa_pn_lnpn_paired.png)
+
+#### Restrained β-CD
+
+![Restrained beta-cyclodextrin occupancy distributions](figures/betacd_pn_lnpn_paired.png)
+
+</details>
+
+## Physical conclusion
+
+The combined evidence supports a specific mechanism rather than a slogan:
+
+- Populated hydration sites are enthalpically stabilized on average.
+- CB7 and OA nevertheless approach a wet–dry phase boundary and undergo collective, two-state-like drying as the guest crosses the portal.
+- Restrained β-CD dehydrates more continuously, demonstrating that collective drying depends on host architecture and wettability.
+- Drying and high-energy-water release are physically distinct claims. Observing the first does not establish the second.
+
+## Computational workflow
 
 ```text
 trajectory / energies
@@ -48,10 +117,10 @@ trajectory / energies
                  Julia analysis + uncertainty propagation
                                   │
                                   ▼
-                  publication figures and quantitative checks
+                  manuscript figures and quantitative checks
 ```
 
-The production design separates a shared JANAL analysis core from a geometry-specific cavity module. Each host uses its own `vol` input and, where its geometry requires it, an adapted `vol.f` backend. The checked-in backend is a six-plane polyhedral implementation; it is an example of that interface, not a claim that one volume definition fits every host.
+The production design separates a shared JANAL analysis core from a geometry-specific cavity module. Each host uses its own `vol` input and, where required by its geometry, an adapted `vol.f` backend. The checked-in backend is a six-plane polyhedral implementation; it demonstrates that interface rather than claiming that one volume definition fits every host.
 
 ## Repository tour
 
@@ -63,29 +132,24 @@ The production design separates a shared JANAL analysis core from a geometry-spe
 | `src/python/` | Occupancy counting and deterministic aggregation |
 | `analysis/` | Reproducible Julia figure and transition analyses |
 | `data/processed/` | Compact inputs for the displayed manuscript analyses |
-| `data/derived/` | Bootstrap errors and derived summary tables |
-| `figures/` | Results placed first for rapid scientific review |
+| `data/derived/` | Bootstrap errors, fit audits, and derived summary tables |
+| `figures/` | Numbered manuscript figures plus detailed supporting panels |
 | `docs/` | Methods, data provenance, validation, and agentic workflow |
 
-## Reproduce the checks
+## Reproduce the checks and figures
 
 Requirements: GNU Fortran, Python 3.10+, and Julia 1.10+.
 
 ```bash
-# Compile all Fortran programs and perform static repository checks
 make check
-
-# Run deterministic Python unit tests
 make test
 
-# Install the Julia environment once, then regenerate all analysis figures
 julia --project=. -e 'using Pkg; Pkg.instantiate()'
 make figures
 ```
 
-See [Methods](docs/METHODS.md), [Data dictionary](docs/DATA_DICTIONARY.md), [Validation](docs/VALIDATION.md), [Volume backends](docs/VOLUME_BACKENDS.md), and [Agentic workflow](docs/AGENTIC_WORKFLOW.md) for the assumptions behind those commands.
+See [Methods](docs/METHODS.md), [Data dictionary](docs/DATA_DICTIONARY.md), [Validation](docs/VALIDATION.md), [Volume backends](docs/VOLUME_BACKENDS.md), and [Agentic workflow](docs/AGENTIC_WORKFLOW.md) for assumptions and limitations.
 
 ## Scope and confidentiality
 
-Only the three systems disclosed in the manuscript—CB7, OA, and β-CD (including the restrained β-CD protocol)—are represented here. Raw trajectories are not included. This repository is private because the manuscript is not yet published; permission to view does not imply permission to redistribute.
-
+Only the systems disclosed in the manuscript—CB7, OA, and β-CD, including the restrained β-CD protocol—are represented here. Raw trajectories are not included. This repository is private because the manuscript is in preparation; permission to view does not imply permission to redistribute.

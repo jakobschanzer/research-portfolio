@@ -117,6 +117,6 @@ fig=plot(panels...;
 )
 
 for ext in ("png","pdf","svg")
-    savefig(fig,joinpath(OUTPUT_DIR,"pmf_decomposition.$ext"))
+    savefig(fig,joinpath(OUTPUT_DIR,"figure2_pmf_decomposition.$ext"))
 end
-println("Wrote figures/pmf_decomposition.png, .pdf, and .svg")
+println("Wrote figures/figure2_pmf_decomposition.png, .pdf, and .svg")
