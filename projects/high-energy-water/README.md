@@ -3,7 +3,14 @@
 **A computational study of hydration thermodynamics and collective drying in CB7, OA, and β-cyclodextrin**  
 Jakob L. Schanzer · manuscript submitted and under peer review
 
-**Project ownership:** I performed all work presented in this repository, including the simulation design and execution, code development and adaptation, analysis, figure production, and scientific interpretation.
+**Scientific ownership:** I performed the underlying scientific work: simulation design and execution, development or adaptation of the core analysis programs, data analysis, and scientific interpretation. I directed and verified Codex while it assembled the reproducible portfolio layer described below; all scientific and publication decisions remained mine.
+
+## Computational summary
+
+- **Methods:** molecular dynamics, 20-temperature REMD, umbrella sampling, WHAM, MBAR, constant-*C*<sub>p</sub> thermodynamic decomposition, spatial thermodynamics, occupancy-fluctuation analysis, and uncertainty quantification
+- **Software:** Fortran trajectory analysis, Python post-processing and deterministic tests, Julia analysis and figure generation, GitHub Actions continuous integration
+- **HPC-scale workflow:** independent 400 ns unbiased simulations, parallel replica/window calculations, and 100 ns conventional umbrella trajectories for every binding-coordinate window
+- **Quality controls:** warning-enabled Fortran compilation, seeded tests, numerical audit outputs, figure regeneration, and an automated publication-boundary check
 
 ## Figures and code — direct links
 
@@ -205,4 +212,4 @@ See [Methods](docs/METHODS.md), [Data dictionary](docs/DATA_DICTIONARY.md), [Val
 
 ## Scope and confidentiality
 
-Only the systems disclosed in the manuscript—CB7, OA, and β-CD, including the restrained β-CD protocol—are represented here. Raw trajectories are not included. This repository is private because the manuscript is under peer review; permission to view does not imply permission to redistribute.
+Only the systems disclosed in the manuscript—CB7, OA, and β-CD, including the restrained β-CD protocol—are represented here. Raw trajectories are not included. This repository must remain private while the manuscript is under peer review. External access should be granted only after explicit approval from the manuscript lead/PI; permission to view does not imply permission to redistribute.

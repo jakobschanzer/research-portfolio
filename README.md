@@ -2,7 +2,15 @@
 
 Computational molecular science, research software, and reproducible analysis by **Jakob L. Schanzer**.
 
-This private portfolio highlights work across statistical mechanics, molecular simulation, Fortran, Python, Julia, uncertainty quantification, and agent-assisted research engineering. All simulation design and execution, scientific code development and adaptation, analysis, visualization, and interpretation presented here were performed by Jakob L. Schanzer.
+This private portfolio highlights work across statistical mechanics, molecular simulation, scientific programming, uncertainty quantification, and agent-assisted research engineering. All underlying scientific work and all final scientific decisions are mine; Codex was used under my supervision to turn that work into an auditable software portfolio.
+
+## Computational profile
+
+| Area | Demonstrated capabilities |
+|---|---|
+| **Computational methods** | Molecular dynamics, replica-exchange molecular dynamics (REMD), umbrella sampling, WHAM, MBAR, spatial thermodynamics, occupancy-fluctuation analysis, and uncertainty quantification |
+| **Scientific software** | Fortran analysis programs and geometry-specific adaptations, Python post-processing and tests, Julia analysis and visualization, version control, and continuous integration |
+| **HPC-scale workflows** | Parallel replica and umbrella-window designs, multi-temperature simulation campaigns, and large-scale trajectory analysis |
 
 ## Current research: water in molecular cavities
 
@@ -15,6 +23,16 @@ The project tests a common mechanistic claim in molecular recognition: that conf
 The central result is more nuanced. Populated hydration sites are, on average, enthalpically stabilized. Sharp collective drying occurs in rigid hydrophobic cavities, but drying alone is not evidence that expelling “high-energy water” drives association.
 
 [Explore the project, figures, physics, and code →](projects/high-energy-water/README.md)
+
+## Agent-assisted scientific software engineering
+
+This repository is also a documented case study in using a coding agent for scientific research engineering.
+
+- **What Codex did:** generated the portfolio structure around my existing research materials; created and iteratively refined the checked-in Julia figure pipeline; implemented reproducible Python post-processing, deterministic tests, publication-boundary checks, and continuous integration; and drafted documentation for my review.
+- **What remained human-controlled:** I designed and ran the simulations, developed or adapted the core scientific analyses, supplied and interpreted the data, defined the physical claims, selected what could be disclosed, and reviewed every result and repository change.
+- **How the agent was constrained:** a machine-readable policy limits the allowed systems and data; Fortran compilation, deterministic tests, figure regeneration, and a confidentiality scan serve as validation gates; commits and pushes require human review.
+
+The complete control loop, example task contract, and limitations are documented in the [agentic workflow](projects/high-energy-water/docs/AGENTIC_WORKFLOW.md) and [validation record](projects/high-energy-water/docs/VALIDATION.md).
 
 ## Scientific software
 
@@ -47,4 +65,4 @@ make test
 
 Figure regeneration and data provenance are documented inside the research project. Raw trajectories are intentionally excluded because of size and unpublished-work controls; compact processed inputs required for the displayed analyses are included.
 
-> **Confidential research note:** this repository is private and contains results from a manuscript under peer review. Do not redistribute without the author’s permission.
+> **Confidential research note:** this repository is private and contains results from a manuscript under peer review. External access should be granted only after explicit approval from the manuscript lead/PI, and permission to view does not imply permission to redistribute.

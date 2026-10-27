@@ -2,6 +2,20 @@
 
 This repository demonstrates a constrained use of Codex for research engineering. The agent may organize code, improve reproducibility, write tests, regenerate figures, and surface assumptions; scientific interpretation and publication decisions remain human-controlled.
 
+## Division of work in this repository
+
+The underlying research predates the portfolio engineering: Jakob L. Schanzer designed and ran the simulations, developed or adapted the core scientific analysis programs, supplied the processed scientific results, determined the physical interpretation, and set the publication boundary.
+
+Working from those materials and under Jakob's direction, Codex:
+
+- generated the repository and project structure;
+- created and iteratively refined the checked-in Julia analysis and figure-generation scripts;
+- implemented reproducible Python aggregation, deterministic tests, and numerical audit outputs;
+- added Fortran compilation checks, continuous integration, and the automated publication-boundary scan; and
+- drafted and revised the README, methods, provenance, validation, and workflow documentation.
+
+Codex did not choose or run the production simulations, generate replacement scientific data, decide which unpublished systems to disclose, or independently determine the scientific conclusions. Jakob inspected the source materials, directed corrections, evaluated the physical meaning of the outputs, and approved the final changes. The repository therefore demonstrates supervised agentic development with explicit scientific ownership, not autonomous authorship of the research.
+
 ## Control loop
 
 ```text
@@ -33,4 +47,3 @@ The root `AGENTS.md` is the machine-readable policy. It limits the allowed syste
 **Human decision:** confirm that the estimator and reported uncertainty match the manuscript’s intended statistical interpretation.
 
 This structure is designed for auditable scientific work: the agent accelerates implementation and verification without becoming an untraceable source of scientific claims.
-
