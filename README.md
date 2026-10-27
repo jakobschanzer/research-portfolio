@@ -16,6 +16,15 @@ The central result is more nuanced. Populated hydration sites are, on average, e
 
 [Explore the project, figures, physics, and code →](projects/high-energy-water/README.md)
 
+## Featured scientific codes
+
+| Code | Analysis performed |
+|---|---|
+| [`janal.f`](projects/high-energy-water/src/fortran/host_analysis/janal.f) | Processes independent unbiased trajectories and energy inputs to calculate cavity-water density, energy, chemical potential/test-particle insertion estimates, occupancy fluctuations, and axial–radial thermodynamic fields. |
+| [`vol.f`](projects/high-energy-water/src/fortran/host_analysis/vol.f) | Supplies the host-following cavity-membership test used by JANAL. The checked-in six-plane implementation documents one geometry-specific production backend; other host geometries used their own `vol` input and adapted backend. |
+| [`hb4.f`](projects/high-energy-water/src/fortran/hydrogen_bonds/hb4.f) | Counts water–water and water–host hydrogen bonds frame by frame under periodic boundary conditions. Ensemble counts from the bulk, host–guest, isolated-host, and isolated-guest simulations supplied the four terms used to calculate the binding hydrogen-bond balance, δ. |
+| [`ring_angle.f`](projects/high-energy-water/src/fortran/ring_geometry/ring_angle.f) | Quantifies β-cyclodextrin ring orientation and inter-monomer spacing from trajectory frames. This geometry analysis supported selection and validation of the open-cavity rim restraints used in the restrained β-CD calculations; the associated free-energy offset was then obtained with a separate MBAR thermodynamic cycle. |
+
 ## Computational capabilities demonstrated
 
 - Legacy and modernized **Fortran** analysis of independent unbiased trajectories—JANAL for cavity thermodynamics plus hydrogen-bond and host-geometry tools

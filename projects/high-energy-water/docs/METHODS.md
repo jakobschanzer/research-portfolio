@@ -22,9 +22,25 @@ The analysis core is shared across systems. Cavity membership is delegated to a 
 
 The manuscript maps water concentration, average hydrogen-bond coordination, and local enthalpy as functions of axial position `z` and radial position `r`. Display interpolation smooths the rendered grids but does not add physical resolution. Hydrogen-bond maps are expressed relative to a bulk reference at 25 °C.
 
+## Binding hydrogen-bond balance
+
+[`hb4.f`](../src/fortran/hydrogen_bonds/hb4.f) identifies hydrogen bonds using an O···O distance of at most 3.5 Å and an O–H···O angle of at least 150° (no more than 30° from linearity). It applies these criteria to trajectory frames under periodic boundary conditions and counts water–water and water–host hydrogen bonds. It is run on one system trajectory at a time. The resulting ensemble-mean total counts from the unbiased pure-water, host–guest, isolated-host, and isolated-guest simulations are combined outside the executable to obtain
+
+```text
+δ = ⟨n_HB⟩_bulk + ⟨n_HB⟩_HG − ⟨n_HB⟩_H − ⟨n_HB⟩_G
+```
+
+The subscripts denote the pure-water (`bulk`), host–guest (`HG`), isolated-host (`H`), and isolated-guest (`G`) systems. The hydrogen-bond-scaled enthalpy estimate reported in Table 1 is
+
+```text
+ΔH_HB^est = −δ ΔH_vap / ⟨n_HB⟩_water
+```
+
+where `ΔH_vap` is the positive molar enthalpy of vaporization of water and `⟨n_HB⟩_water` is the mean number of hydrogen bonds per bulk water. The leading minus sign assigns a favorable estimate to a positive net hydrogen-bond gain. This conversion is a count-based comparison, not a complete energetic decomposition.
+
 ## Nau hydration partition quantity
 
-The hydrogen-bond analysis uses an oxygen–oxygen distance of at most 3.5 Å and an O–H···O angle of at least 150° (equivalently, no more than 30° from linearity). Cavity membership is assigned using the host-specific geometric volume definition.
+The hydration-partition analysis uses the same hydrogen-bond criterion. Cavity membership is assigned using the host-specific geometric volume definition.
 
 To evaluate the hydration-partition model introduced by Werner M. Nau and co-workers, the analysis calculates
 
@@ -66,6 +82,14 @@ At every `z`, the temperature-dependent PMF was fit by least squares to a consta
 The fit returns `ΔH_ref(z)`, `ΔS_ref(z)`, and `ΔCp(z)`, enabling the free-energy profile to be interpreted in terms of enthalpic and entropic contributions at the reference temperature.
 
 The potential of mean force is also decomposed into the direct host–guest interaction and an operational residual. The direct term is the sum of Coulombic and Lennard–Jones host–guest energies. The residual, `G_res(z) = ΔG_PMF(z) − U_direct(z)`, is not a uniquely isolated solvent free energy: it may also include entropy, host reorganization, and restraint-related contributions absent from the direct interaction energy. Enthalpic and entropic terms must therefore be interpreted together; a favorable binding free energy does not imply that every microscopic contribution is favorable.
+
+## β-CD restraint geometry and free-energy correction
+
+[`ring_angle.f`](../src/fortran/ring_geometry/ring_angle.f) reads β-CD trajectory frames, unwraps the selected heavy ring atoms across periodic boundaries, and calculates ring-plane orientation statistics and inter-monomer center-of-mass distance distributions. This analysis characterized and validated the open bound-state geometry used to define the β-CD rim restraints.
+
+From the bound trajectory, the mean opposing 1–3 rim-atom distances were 1.25 nm for the upper-rim O–O pairs and 1.05 nm for the lower-rim exocyclic C–C pairs. These distances were imposed with harmonic restraints of 1000 kJ mol⁻¹ nm⁻² in the restrained isolated-host and host–guest simulations and retained during the restrained umbrella calculations.
+
+The ring-geometry executable establishes the structural restraint targets; it does not itself calculate a free energy. The free-energy correction was obtained separately by using multistate Bennett acceptance ratio (MBAR) analysis to evaluate the reversible work of applying and removing the restraints for both the isolated host and host–guest complex. Their thermodynamic-cycle difference provides the offset needed to relate the restrained and unrestrained β-CD binding descriptions.
 
 ## Occupancy and drying
 

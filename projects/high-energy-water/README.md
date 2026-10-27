@@ -35,6 +35,8 @@ At each position *z*, I fit the temperature-dependent PMF to a constant-heat-cap
 
 This fit separates the PMF into position-dependent enthalpic, entropic, and heat-capacity contributions: ΔH<sub>ref</sub>(*z*), ΔS<sub>ref</sub>(*z*), and ΔCp(*z*). The top row shows ΔG(*z*), ΔH(*z*), and −TΔS(*z*) at the reference temperature; the bottom row compares the PMF with the direct host–guest interaction and the operational non-direct residual.
 
+For β-CD, [`ring_angle.f`](src/fortran/ring_geometry/ring_angle.f) characterized ring orientation and inter-monomer spacing in the bound ensemble, supporting selection and validation of the rim restraints used to preserve the open cavity. The bound-trajectory geometry gave target opposing 1–3 distances of 1.25 nm for the upper-rim O–O pairs and 1.05 nm for the lower-rim exocyclic C–C pairs. After the restrained PMF calculation, I used MBAR to evaluate the reversible work of applying and removing the restraints for the isolated host and host–guest complex; their thermodynamic-cycle difference supplies the restrained–unrestrained free-energy correction. The ring code determines the restraint geometry, whereas MBAR determines the free-energy offset.
+
 - CB7 binds almost entirely enthalpically, and its direct host–guest interaction nearly reproduces the PMF.
 - OA is also enthalpy dominated, but its residual opposes binding near the minimum.
 - Restrained β-CD is the key counterexample: substantial water displacement accompanies favorable binding without a favorable binding enthalpy. Its residual also opposes binding.
@@ -53,7 +55,13 @@ To test the high-energy-water framework introduced by **Werner M. Nau and co-wor
 
 Here, `⟨N⟩` is the mean number of waters in the host-specific cavity, while `⟨n_HB⟩_bulk` and `⟨n_HB⟩_pocket` are the mean numbers of **water–water hydrogen bonds per water** in bulk and in the cavity. The term in parentheses is therefore the mean hydrogen-bond deficiency of one cavity water relative to bulk; multiplication by occupancy converts it into the total water–water hydrogen-bond-number deficit of the resident cavity population. A larger positive 𝒵 means that more water–water hydrogen bonds are missing relative to the same number of bulk waters.
 
-𝒵 is a dimensionless hydrogen-bond count—not an energy. It does not encode hydrogen-bond strength, compensating host–water interactions, guest desolvation, solvent or host reorganization, or direct host–guest interactions. The separate quantity δ reports the net change in total hydrogen-bond counts upon binding. Neither 𝒵 nor δ reproduces the full binding enthalpy, so a positive hydrogen-bond deficit cannot by itself establish a population of energetically unfavorable water. The exact definitions, geometric hydrogen-bond criterion, and Nau-method provenance are documented in the [methods](docs/METHODS.md#nau-hydration-partition-quantity).
+Separately, [`hb4.f`](src/fortran/hydrogen_bonds/hb4.f) counted water–water and water–host hydrogen bonds in each unbiased simulation. The ensemble-mean total counts from the pure-water (`bulk`), host–guest (`HG`), isolated-host (`H`), and isolated-guest (`G`) systems were combined as
+
+```text
+δ = ⟨n_HB⟩_bulk + ⟨n_HB⟩_HG − ⟨n_HB⟩_H − ⟨n_HB⟩_G
+```
+
+𝒵 is a dimensionless hydrogen-bond count—not an energy—and δ is a binding-associated difference in total counts. Neither quantity encodes hydrogen-bond strength, compensating host–water interactions, guest desolvation, solvent or host reorganization, or direct host–guest interactions. Neither 𝒵 nor δ reproduces the full binding enthalpy, so a positive hydrogen-bond deficit cannot by itself establish a population of energetically unfavorable water. The exact definitions, geometric hydrogen-bond criterion, and Nau-method provenance are documented in the [methods](docs/METHODS.md#binding-hydrogen-bond-balance).
 
 ### Figure 3 — Occupied cavity water is enthalpically stabilized on average
 
