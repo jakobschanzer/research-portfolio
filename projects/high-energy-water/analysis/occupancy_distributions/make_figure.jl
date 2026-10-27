@@ -331,9 +331,12 @@ node_svg(parts, records, "restrained β-CD", cd, 6, BETA_SHARED_Y, 0.0, 0.0, "cd
 shared_x = node_x(6)
 source_x = node_x(5) + NODE_W - 5
 target_x = shared_x + 8
-upper_y = BETA_NEG_Y + 60
-lower_y = BETA_POS_Y + 60
-center_y = BETA_SHARED_Y + 60
+# node_svg offsets each schematic by 20 px, and schematic_svg places its
+# molecular centerline another 60 px below that origin. Anchor the shared
+# connector to those true centerlines so the brace is vertically centered.
+upper_y = BETA_NEG_Y + 80
+lower_y = BETA_POS_Y + 80
+center_y = BETA_SHARED_Y + 80
 push!(parts, "<path d=\"M $source_x $upper_y C $(source_x+25) $upper_y $(target_x-25) $center_y $target_x $center_y\" fill=\"none\" stroke=\"#555\" stroke-width=\"1.4\" marker-end=\"url(#arrow)\"/>")
 push!(parts, "<path d=\"M $source_x $lower_y C $(source_x+25) $lower_y $(target_x-25) $center_y $target_x $center_y\" fill=\"none\" stroke=\"#555\" stroke-width=\"1.4\" marker-end=\"url(#arrow)\"/>")
 

@@ -1467,6 +1467,6 @@
 <circle cx="1761.6666666666667" cy="1579.21751739296" r="2.7" fill="#111" stroke="#111" stroke-width="0.7" clip-path="url(#l_cd0)"/>
 <circle cx="1789.3333333333333" cy="1591.2327892733556" r="2.7" fill="#111" stroke="#111" stroke-width="0.7" clip-path="url(#l_cd0)"/>
 <circle cx="1817.0" cy="1606.7613713399987" r="2.7" fill="#111" stroke="#111" stroke-width="0.7" clip-path="url(#l_cd0)"/>
-<path d="M 1593.0 1084.0 C 1618.0 1084.0 1597.0 1307.0 1622.0 1307.0" fill="none" stroke="#555" stroke-width="1.4" marker-end="url(#arrow)"/>
-<path d="M 1593.0 1530.0 C 1618.0 1530.0 1597.0 1307.0 1622.0 1307.0" fill="none" stroke="#555" stroke-width="1.4" marker-end="url(#arrow)"/>
+<path d="M 1593.0 1104.0 C 1618.0 1104.0 1597.0 1327.0 1622.0 1327.0" fill="none" stroke="#555" stroke-width="1.4" marker-end="url(#arrow)"/>
+<path d="M 1593.0 1550.0 C 1618.0 1550.0 1597.0 1327.0 1622.0 1327.0" fill="none" stroke="#555" stroke-width="1.4" marker-end="url(#arrow)"/>
 </svg>
