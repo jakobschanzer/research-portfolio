@@ -24,7 +24,7 @@ OA, restrained β-CD, and CB7 differ in shape, portal geometry, flexibility, and
 
 ![PMF thermodynamic and direct-residual decomposition](figures/figure2_pmf_decomposition.png)
 
-I obtained the temperature-dependent PMFs using **replica-exchange molecular dynamics combined with umbrella sampling**. Harmonic umbrella windows were placed every 0.04 nm along the host–guest separation coordinate. Exchanges were attempted across 20 replicas spanning 5–60 °C, and the biased distributions were combined with WHAM to reconstruct ΔG<sub>PMF</sub>(*z*,*T*).
+I obtained the temperature-dependent PMFs using **replica-exchange molecular dynamics combined with umbrella sampling**. Harmonic umbrella windows were placed every 0.04 nm along the host–guest separation coordinate. Exchanges were attempted across 20 replicas spanning 5–60 °C, and the biased distributions were combined with WHAM to reconstruct ΔG<sub>PMF</sub>(*z*,*T*). These biased REMD/umbrella trajectories were a separate production dataset from the unbiased equilibrium simulations analyzed with JANAL.
 
 At each position *z*, I fit the temperature-dependent PMF to a constant-heat-capacity model referenced to 298.15 K:
 
@@ -59,7 +59,7 @@ Here, `⟨N⟩` is the mean number of waters in the host-specific cavity, while 
 
 ![Mean cavity occupancy as a function of temperature](figures/figure3_temperature_response.png)
 
-Mean cavity occupancy decreases from 5 to 95 °C for every host model: approximately 6.40→5.36 waters for CB7, 4.20→3.04 for OA, 4.87→4.31 for restrained β-CD, and 3.69→2.92 for unrestrained β-CD. After accounting for the comparatively small thermal-expansion contribution, the negative temperature slopes imply a negative mean enthalpy for transferring water from bulk into each cavity.
+These temperature-response results come from the independent 400 ns **unbiased NPT simulations** analyzed with JANAL, not from the REMD/umbrella trajectories. Mean cavity occupancy decreases from 5 to 95 °C for every host model: approximately 6.40→5.36 waters for CB7, 4.20→3.04 for OA, 4.87→4.31 for restrained β-CD, and 3.69→2.92 for unrestrained β-CD. After accounting for the comparatively small thermal-expansion contribution, the negative temperature slopes imply a negative mean enthalpy for transferring water from bulk into each cavity.
 
 This is the first direct challenge to the high-energy-water picture: **the resident cavity population is lower—not higher—in mean enthalpy than bulk water**.
 
@@ -75,7 +75,7 @@ Some dense, low-enthalpy sites remain deficient in water–water hydrogen bonds.
 
 ![Mean cavity occupancy along the host-guest binding coordinate](figures/figure5_mean_occupancy_vs_z.png)
 
-Mean occupancy identifies where water leaves as cyclohexane enters. OA passes from 25% to 75% empty over approximately 0.61 Å, and CB7 over 0.92 Å. Restrained β-CD responds more gradually and asymmetrically: approximately 2.21 Å through its negative-*z* narrower primary portal and 1.19 Å through its positive-*z* wider secondary portal.
+For the drying analysis, every biased umbrella window was rerun for 100 ns **without replica exchange**; these conventional umbrella trajectories were separate from both the REMD thermodynamic calculations and the unbiased JANAL calculations. Mean occupancy identifies where water leaves as cyclohexane enters. OA passes from 25% to 75% empty over approximately 0.61 Å, and CB7 over 0.92 Å. Restrained β-CD responds more gradually and asymmetrically: approximately 2.21 Å through its negative-*z* narrower primary portal and 1.19 Å through its positive-*z* wider secondary portal.
 
 These widths quantify an equilibrium response to guest position, not a kinetic drying rate. More importantly, a mean curve alone cannot distinguish concerted switching from the sequential loss of independent waters. That distinction requires the complete occupancy distributions.
 
@@ -120,29 +120,28 @@ The combined evidence supports a specific mechanism rather than a slogan:
 ## Computational workflow
 
 ```text
-simulation trajectories / energies
+three separate production datasets
         │
-        ├── replica-exchange umbrella sampling
+        ├── unbiased NPT simulations (400 ns; 5–95 °C)
+        │       ├── JANAL (Fortran): density, energy, chemical potential,
+        │       │                     fluctuations and cavity occupancy
+        │       ├── H-bond analysis: water–water and water–host networks
+        │       └── geometry tools: host orientation and cavity membership
+        │
+        ├── biased umbrella simulations + REMD (20 temperatures; 5–60 °C)
         │       └── WHAM ΔG_PMF(z,T)
         │               └── constant-Cp fit → ΔH(z), ΔS(z), ΔCp(z)
-        ├── JANAL (Fortran) ── density, energy, chemical potential,
-        │                       fluctuations, occupancy distributions
-        ├── H-bond analysis ── water–water and water–host networks
-        └── geometry tools ─── host orientation and cavity membership
+        │
+        └── conventional biased umbrella windows (100 ns/window; no REMD)
+                └── ⟨N⟩(z), P(N|z), drying widths and fluctuations
                                       │
                                       ▼
-                             processed workbooks
-                                      │
-                                      ▼
-                     Julia analysis + uncertainty propagation
-                                      │
-                                      ▼
-                      manuscript figures and quantitative checks
+                     processed workbooks → Julia figures and checks
 ```
 
-The production design separates a shared JANAL analysis core from a geometry-specific cavity module. Each host uses its own `vol` input and, where required by its geometry, an adapted `vol.f` backend. The checked-in backend is a six-plane polyhedral implementation; it demonstrates that interface rather than claiming that one volume definition fits every host.
+JANAL was run on the **unbiased simulations only**; it was not run on the REMD trajectories. The production design separates its shared analysis core from a geometry-specific cavity module. Each host uses its own `vol` input and, where required by its geometry, an adapted `vol.f` backend. The checked-in backend is a six-plane polyhedral implementation; it demonstrates that interface rather than claiming that one volume definition fits every host.
 
-The repository reproduces the displayed analysis from compact processed workbooks. The underlying replica-exchange umbrella trajectories and full WHAM production directories are excluded because of size and manuscript confidentiality.
+The repository reproduces the displayed analysis from compact processed workbooks. The underlying unbiased, REMD/umbrella, and conventional-umbrella trajectories, as well as the full WHAM production directories, are excluded because of size and manuscript confidentiality.
 
 ## Repository tour
 

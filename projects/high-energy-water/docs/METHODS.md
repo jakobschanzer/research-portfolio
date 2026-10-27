@@ -4,9 +4,17 @@
 
 The curated portfolio covers the three host families presented in the manuscript: cucurbit[7]uril (CB7), octa-acid (OA), and β-cyclodextrin (β-CD). The β-CD analysis includes unrestrained and restrained protocols where the distinction is scientifically relevant.
 
+## Separate simulation datasets
+
+The project used three independent trajectory sets that must not be conflated:
+
+1. **Unbiased equilibrium simulations:** pure water, isolated hosts, isolated cyclohexane, and host–guest complexes were simulated in the NPT ensemble for 400 ns at each temperature from 5 to 95 °C in 10 °C increments. With a 2 fs time step, 200,000 snapshots were harvested from each production trajectory. These unbiased trajectories supplied the equilibrium structural, solvation, hydrogen-bond, temperature-response, and JANAL analyses.
+2. **Replica-exchange umbrella simulations:** harmonically biased host–guest separation windows were simulated with exchanges among 20 temperatures from 5 to 60 °C. These trajectories supplied the WHAM PMFs and their constant-heat-capacity thermodynamic decomposition. They were not inputs to JANAL.
+3. **Conventional umbrella simulations:** each biased umbrella window was rerun for 100 ns without replica exchange, producing 100,000 saved configurations per window. These trajectories supplied `⟨N⟩(z)` and `P(N|z)` for the drying analysis; they were distinct from both the unbiased JANAL trajectories and the REMD production trajectories.
+
 ## JANAL thermodynamic analysis
 
-The Fortran JANAL program processes aligned molecular-simulation frames and energy inputs to accumulate cavity-resolved observables. Its outputs include water density, energy, chemical potential/test-particle insertion estimates, occupancy distributions, fluctuations, and hydrogen-bond statistics on axial–radial grids.
+The Fortran JANAL program was run on the independent **unbiased equilibrium simulations**, not on umbrella-biased or replica-exchange trajectories. It processes aligned molecular-simulation frames and energy inputs to accumulate cavity-resolved observables. Its outputs include water density, energy, chemical potential/test-particle insertion estimates, occupancy distributions, fluctuations, and hydrogen-bond statistics on axial–radial grids.
 
 The analysis core is shared across systems. Cavity membership is delegated to a geometry-specific volume backend. This separation matters: a curved or polyhedral host cavity cannot be represented faithfully by a single universal boundary definition.
 
@@ -46,6 +54,8 @@ Umbrella sampling was performed along the host–guest separation coordinate, `z
 
 Replica-exchange molecular dynamics was applied to the umbrella simulations using 20 temperatures from 5 to 60 °C. Exchanges were evaluated with the Metropolis criterion, and the biased distributions were combined with the weighted histogram analysis method (WHAM) to reconstruct `ΔG_PMF(z,T)`.
 
+This REMD/umbrella workflow is separate from the unbiased simulation and JANAL workflow described above.
+
 At every `z`, the temperature-dependent PMF was fit by least squares to a constant-heat-capacity model referenced to `T_ref = 298.15 K`:
 
 ```text
@@ -58,6 +68,8 @@ The fit returns `ΔH_ref(z)`, `ΔS_ref(z)`, and `ΔCp(z)`, enabling the free-ene
 The potential of mean force is also decomposed into the direct host–guest interaction and an operational residual. The direct term is the sum of Coulombic and Lennard–Jones host–guest energies. The residual, `G_res(z) = ΔG_PMF(z) − U_direct(z)`, is not a uniquely isolated solvent free energy: it may also include entropy, host reorganization, and restraint-related contributions absent from the direct interaction energy. Enthalpic and entropic terms must therefore be interpreted together; a favorable binding free energy does not imply that every microscopic contribution is favorable.
 
 ## Occupancy and drying
+
+The drying analysis used the 100 ns conventional umbrella trajectories generated independently for every biased window **without replica exchange**. It did not use the REMD trajectories or the unbiased JANAL trajectories. Configurations were sorted by their instantaneous host–guest coordinate into 0.4 Å bins.
 
 The conditional distribution `P(N|z)` gives the probability of observing `N` cavity waters at guest position `z`. Mean occupancy and fluctuations are computed from that distribution. A 25–75% transition width is obtained by linear interpolation of the fraction-empty curve between adjacent 0.4 Å bins. “Sharp” and “gradual” refer to equilibrium change along the binding coordinate, not a kinetic rate.
 

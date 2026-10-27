@@ -18,7 +18,7 @@ The central result is more nuanced. Populated hydration sites are, on average, e
 
 ## Computational capabilities demonstrated
 
-- Legacy and modernized **Fortran** analysis for cavity thermodynamics, hydrogen bonding, and host geometry
+- Legacy and modernized **Fortran** analysis of independent unbiased trajectories—JANAL for cavity thermodynamics plus hydrogen-bond and host-geometry tools
 - Replica-exchange umbrella sampling, WHAM reconstruction, and constant-heat-capacity thermodynamic decomposition
 - Reproducible **Julia** figure generation and quantitative transition analysis
 - Tested **Python** post-processing with deterministic bootstrap uncertainty estimates
