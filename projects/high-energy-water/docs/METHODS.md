@@ -18,6 +18,20 @@ The Fortran JANAL program was run on the independent **unbiased equilibrium simu
 
 The analysis core is shared across systems. Cavity membership is delegated to a geometry-specific volume backend. This separation matters: a curved or polyhedral host cavity cannot be represented faithfully by a single universal boundary definition.
 
+## Temperature-dependent cavity occupancy
+
+For each host model, mean cavity occupancy was calculated from the unbiased simulations at temperatures from 5 to 95 °C. The thermodynamic relation used to interpret the slope is
+
+```text
+(∂⟨N⟩/∂T)_P = ⟨N⟩[−α + ⟨Δh_w⟩/(RT²)]
+```
+
+where `α` is the isobaric thermal-expansion coefficient of bulk water and `⟨Δh_w⟩` is the mean enthalpy of transferring one water molecule from bulk into the host cavity. The `−α` term means thermal expansion alone produces a weak negative slope. Near ambient conditions, its magnitude is small compared with the observed occupancy changes. A more negative measured slope therefore requires `⟨Δh_w⟩ < 0`, meaning the populated cavity-water ensemble is lower in mean enthalpy than bulk water.
+
+This inference addresses the enthalpic version of the high-energy-water hypothesis directly. It does not claim that confinement is favorable in every thermodynamic component, nor that water release cannot occur during binding; it shows that the resident population cannot be treated as uniformly enthalpically destabilized.
+
+The unrestrained β-CD 25 °C central value was updated from the revised simulation (`⟨N⟩ = 3.500939`). Its uncertainty is smaller than the plotted marker; accordingly, the Figure 3 generator omits an independently visible error bar at that point rather than reusing the obsolete uncertainty from the superseded run.
+
 ## Spatial maps
 
 The manuscript maps water concentration, average hydrogen-bond coordination, and local enthalpy as functions of axial position `z` and radial position `r`. Display interpolation smooths the rendered grids but does not add physical resolution. Hydrogen-bond maps are expressed relative to a bulk reference at 25 °C.

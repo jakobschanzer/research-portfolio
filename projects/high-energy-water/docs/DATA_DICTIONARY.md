@@ -9,8 +9,8 @@ All checked-in workbooks are compact, processed inputs for the three disclosed m
 | `data/processed/spatial_maps.xlsx` | Axial–radial density, hydrogen-bond, and enthalpy grids derived from the unbiased simulations | `analysis/spatial_maps/` |
 | `data/processed/occupancy_along_binding_coordinate.xlsx` | Conditional occupancy distributions from the 100 ns conventional umbrella windows without replica exchange | `analysis/occupancy/` |
 | `data/processed/hydrogen_bond_temperature.xlsx` | Temperature-dependent hydrogen-bond summaries from the unbiased simulations | `analysis/temperature_response/` |
-| `data/processed/unbiased_occupancy.xlsx` | Reference occupancy values from the independent unbiased simulations | supporting analysis |
-| `data/derived/water_occupancy_by_host.xlsx` | Host-level temperature/occupancy summary | `analysis/temperature_response/` |
+| `data/processed/unbiased_occupancy.xlsx` | Authoritative occupancy values from the independent unbiased simulations, including the revised unrestrained β-CD 25 °C run | `analysis/temperature_response/` |
+| `data/derived/water_occupancy_by_host.xlsx` | Host-level occupancy verification and block SEMs; the superseded unrestrained β-CD 25 °C uncertainty is intentionally blank | `analysis/temperature_response/` |
 | `data/derived/*_cluster_bootstrap_sem.tsv` | Cluster-bootstrap occupancy standard errors | `analysis/occupancy/` |
 | `data/derived/pn_fattail_fits.xlsx` | Generated audit of wet-basin quadratic fits and low-occupancy enhancement | `analysis/occupancy_distributions/` |
 

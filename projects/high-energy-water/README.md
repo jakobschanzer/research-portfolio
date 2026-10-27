@@ -67,9 +67,17 @@ Separately, [`hb4.f`](src/fortran/hydrogen_bonds/hb4.f) counted water–water an
 
 ![Mean cavity occupancy as a function of temperature](figures/figure3_temperature_response.png)
 
-These temperature-response results come from the independent 400 ns **unbiased NPT simulations** analyzed with JANAL, not from the REMD/umbrella trajectories. Mean cavity occupancy decreases from 5 to 95 °C for every host model: approximately 6.40→5.36 waters for CB7, 4.20→3.04 for OA, 4.87→4.31 for restrained β-CD, and 3.69→2.92 for unrestrained β-CD. After accounting for the comparatively small thermal-expansion contribution, the negative temperature slopes imply a negative mean enthalpy for transferring water from bulk into each cavity.
+These temperature-response results come from the independent 400 ns **unbiased NPT simulations** analyzed with JANAL, not from the REMD/umbrella trajectories. Mean cavity occupancy decreases from 5 to 95 °C for every host model: approximately 6.40→5.36 waters for CB7, 4.20→3.04 for OA, 4.87→4.31 for restrained β-CD, and 3.69→2.92 for unrestrained β-CD. The revised unrestrained β-CD 25 °C run gives `⟨N⟩ = 3.501`, removing the earlier offset and producing a nearly linear temperature response (`R² = 0.989` for a descriptive linear fit). Its uncertainty is smaller than the plotted symbol, so no separate error bar is visible for that point.
 
-This is the first direct challenge to the high-energy-water picture: **the resident cavity population is lower—not higher—in mean enthalpy than bulk water**.
+The thermodynamic connection is
+
+```text
+(∂⟨N⟩/∂T)_P = ⟨N⟩[−α + ⟨Δh_w⟩/(RT²)]
+```
+
+Here, `α` is the thermal-expansion coefficient of bulk water and `⟨Δh_w⟩` is the mean enthalpy of transferring one water from bulk into the cavity. Thermal expansion contributes a small negative slope, but it is too small to explain the observed trends. The remaining negative slope requires `⟨Δh_w⟩ < 0`: populating the cavity is enthalpically favorable relative to leaving that water in bulk. A uniformly “high-energy” resident population would instead require a positive transfer enthalpy and, after correcting for thermal expansion, the opposite temperature tendency.
+
+This is the first direct challenge to the proposed enthalpic release mechanism: **the resident cavity population is lower—not higher—in mean enthalpy than bulk water**. Displacing those waters may still accompany favorable binding, but their release cannot be assigned a favorable enthalpy merely because they were confined or hydrogen-bond deficient.
 
 ### Figure 4 — Water occupies stabilized interfacial sites
 
