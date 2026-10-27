@@ -107,8 +107,8 @@ for (i,h) in enumerate(HOSTS)
     push!(panels,p)
 end
 
-annotate!(panels[1], HOSTS[1].xlim[1]+0.6, HOSTS[1].ylim[2]-9, text("a",17,:bold,:left))
-annotate!(panels[4], HOSTS[1].xlim[1]+0.6, HOSTS[1].ylim[2]-9, text("b",17,:bold,:left))
+annotate!(panels[1], HOSTS[1].xlim[1]+0.6, HOSTS[1].ylim[2]-9, text("a",17,"DejaVu Sans",:left))
+annotate!(panels[4], HOSTS[1].xlim[1]+0.6, HOSTS[1].ylim[2]-9, text("b",17,"DejaVu Sans",:left))
 
 fig=plot(panels...;
     layout=(2,3), size=(1500,930), dpi=600,

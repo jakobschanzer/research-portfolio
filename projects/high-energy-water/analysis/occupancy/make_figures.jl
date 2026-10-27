@@ -182,7 +182,7 @@ function nz_panel(z,mean,sem,title_text,letter,xlims,xticks,bands)
         errorbar_color=RGB(.30,.30,.30),errorbar_linewidth=1.0,
         label=L"\langle N\rangle\pm\mathrm{SEM}",legend=:bottomright,
     )
-    annotate!(p,xlims[1]+0.035*(xlims[2]-xlims[1]),6.68,text(letter,17,:bold,:left))
+    annotate!(p,xlims[1]+0.035*(xlims[2]-xlims[1]),6.68,text(letter,17,"DejaVu Sans",:left))
     p
 end
 

@@ -4,7 +4,7 @@ This repository demonstrates a constrained use of Codex for research engineering
 
 ## Division of work in this repository
 
-The underlying research predates the portfolio engineering: Jakob L. Schanzer designed and ran the simulations, developed or adapted the core scientific analysis programs, supplied the processed scientific results, determined the physical interpretation, and set the publication boundary.
+The underlying research predates the portfolio engineering: Jakob L. Schanzer designed and ran the simulations, developed or adapted the core scientific analysis programs, supplied the processed scientific results, and set the repository's publication boundary. Scientific interpretation was developed by Jakob with his advisor, Hank Ashbaugh, and their experimental collaborator, Bruce Gibb.
 
 Working from those materials and under Jakob's direction, Codex:
 
@@ -14,7 +14,7 @@ Working from those materials and under Jakob's direction, Codex:
 - added Fortran compilation checks, continuous integration, and the automated publication-boundary scan; and
 - drafted and revised the README, methods, provenance, validation, and workflow documentation.
 
-Codex did not choose or run the production simulations, generate replacement scientific data, decide which unpublished systems to disclose, or independently determine the scientific conclusions. Jakob inspected the source materials, directed corrections, evaluated the physical meaning of the outputs, and approved the final changes. The repository therefore demonstrates supervised agentic development with explicit scientific ownership, not autonomous authorship of the research.
+Codex did not choose or run the production simulations, generate replacement scientific data, decide which unpublished systems to disclose, or independently determine the scientific conclusions. Jakob inspected the source materials, directed corrections, evaluated the physical meaning of the outputs with his human collaborators, and approved the final repository changes. The repository therefore demonstrates supervised agentic development with explicit scientific ownership, not autonomous authorship of the research.
 
 ## Control loop
 
