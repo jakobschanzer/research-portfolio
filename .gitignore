@@ -1,0 +1,33 @@
+# Compiled artifacts
+*.o
+*.mod
+*.out
+*.exe
+build/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+
+# Julia
+projects/high-energy-water/Manifest.toml
+
+# Operating systems and editors
+.DS_Store
+*.swp
+.vscode/
+
+# Scientific runs and large/raw simulation data
+*.dcd
+*.xtc
+*.trr
+*.nc
+*.restart
+projects/high-energy-water/data/raw/
+
+# Local scratch and logs
+scratch/
+*.log
+

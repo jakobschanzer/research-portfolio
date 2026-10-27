@@ -1,73 +1,48 @@
-# Janal & Volume Modules
+# Computational Molecular Science Portfolio
 
-This repo currently includes:
-- `janal.f` — HostAnalysis core for cavity water energetics and statistics
-- `vol.f`   — Volume module (generalized across cavity geometries)
+Research software and reproducible analysis by **Jakob L. Schanzer**.
 
-## Build
-# (example using gfortran; adjust flags as needed)
-gfortran -O3 -fimplicit-none -o janal janal.f vol.f
+This private portfolio highlights scientific computing across statistical mechanics, molecular simulation analysis, Fortran, Python, Julia, uncertainty quantification, and agent-assisted research engineering.
 
-## Inputs (expected files)
-- `drive`, `temperature`, `top`, `top-bind`, `top-hb`, `pot`, `pot-sol`
-See comments in `janal.f` for formats.
+## Featured project: water in molecular cavities
 
-## Outputs (selected)
-- `misc.out`, `muzr.out`, `enzr.out`, `dist.out`, `fluc.out`, `data.out`
-2D fields: `gg`, `gh`, `gh2`, `gn`, `gn2`, `vn1`, `vn2`, `hd` (z × r grids)
+[![Host systems: CB7, OA, and beta-cyclodextrin](projects/high-energy-water/figures/host_systems.png)](projects/high-energy-water/README.md)
 
-## Notes
-- Implements test particle insertion (TPI) for LJ and WCA inside pockets
-- Computes H-bond distributions inside/outside the pocket
-- Generalized across different cavity volumes
+### Does molecular confinement create “high-energy” water?
 
-## HBB — Hydrogen-Bond Analysis
+The project tests a common mechanistic claim in molecular recognition: that confined water is uniformly energetically unfavorable and that releasing it necessarily drives binding. It combines spatial thermodynamic maps, occupancy fluctuations, hydrogen-bond statistics, temperature response, and binding-coordinate analysis for three manuscript systems: **CB7, OA, and β-cyclodextrin**.
 
-This module quantifies hydrogen bonding in supramolecular host systems.
+The central result is more nuanced. Populated hydration sites are, on average, enthalpically stabilized. Sharp collective drying occurs in rigid hydrophobic cavities, but drying alone is not evidence that expelling “high-energy water” drives association.
 
-- `HBB/hb4.f` — Fortran analysis of water–water, water–host, and host–water H-bonds, including *bridging waters* (one water H-bonded to two different host acceptors).
+[Explore the project, figures, physics, and code →](projects/high-energy-water/README.md)
 
-- `HBB/run.drive` — Driver script to run the HBB workflow end-to-end on trajectories/coordinate files.
+## Computational capabilities demonstrated
 
-- `HBB/compile.py` — Python script that compiles HBB outputs into aggregated statistics (averages, variances, distributions) for downstream plotting.
+- Legacy and modernized **Fortran** analysis for cavity thermodynamics, hydrogen bonding, and host geometry
+- Reproducible **Julia** figure generation and quantitative transition analysis
+- Tested **Python** post-processing with deterministic bootstrap uncertainty estimates
+- Spatial density, chemical-potential, enthalpy, and hydrogen-bond maps
+- Statistical-mechanical interpretation connecting microscopic hydration to binding thermodynamics
+- Geometry-aware analysis through a shared JANAL core and host-specific volume backends
+- CI compilation/tests plus a constrained **Codex agent workflow** with explicit validation gates
 
+## Portfolio roadmap
 
-**Build**
+| Project | Focus | Status |
+|---|---|---|
+| [High-energy water](projects/high-energy-water/README.md) | Confined-water thermodynamics and collective drying | Featured; manuscript in preparation |
+| Project 2 | Multiscale molecular modeling | Planned |
+| Project 3 | Agentic scientific computing | Planned |
 
-```bash
-gfortran -O3 -o HBB/hbb HBB/hb4.f
-```
+## Reproducibility
 
-
-**Usage**
+From the repository root:
 
 ```bash
-bash HBB/run.drive
-python HBB/compile.py
+make check
+make test
 ```
 
-## RING_ANGLE — Cyclodextrin Ring Orientation/Spacing
+Figure regeneration and data provenance are documented inside the featured project. Raw trajectories are intentionally excluded because of size and unpublished-work controls; compact processed inputs required for the displayed analyses are included.
 
-Fortran 95 tool to compute cyclodextrin ring orientation and spacing statistics.
-
-- `RING_ANGLE/ring_angle.f` — computes cos(θ) histograms (ring normals vs macro COM), and d12–d15 COM–COM distance histograms with summaries.
-
-**Build**
-
-```bash
-gfortran -O3 -o RING_ANGLE/ring_angle RING_ANGLE/ring_angle.f
-```
-
-**Inputs**
-
-- `drive`: `ntot`, `nframes`, optional `[nskip]`, `[stride]`
-
-- `vol`: `NMON`, optional `CHUNK_RING` (default 6), then RING indices (6 heavy atoms per monomer)
-
-- **stdin**: frames: title line, then `x y z ... bx by bz`
-
-**Outputs**
-
-- `cos_theta_hist.out`, `cos_theta_summary.out`
-
-- `d12_hist.out .. d15_hist.out`, `d_summary.out`
+> **Confidential research note:** this repository is private and contains results from a manuscript in preparation. Do not redistribute without the author’s permission.

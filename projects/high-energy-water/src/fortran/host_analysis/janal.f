@@ -163,7 +163,7 @@ c     rf2=rf*rf
         do i=1,2
           read(21,*) jb(i,0)
           if (jb(i,0).gt.20) then
-            write(*,*) 'reconsider host orientation shit'
+            write(*,*) 'ERROR: host orientation group exceeds 20 atoms'
             stop
           endif
           do j=1,jb(i,0)
@@ -223,7 +223,14 @@ c- begin: analyze configurations
         vav=vav+vol
 
 c- begin: center the host
+        if (icf.le.0) then
+          write(*,*) 'ERROR: centering trial count must be positive'
+          stop
+        endif
         rr=1.d20
+        xc=0.d0
+        yc=0.d0
+        zc=0.d0
         do i=1,icf
           xx=bx*(ranu(0)-0.5d0)
           yy=by*(ranu(0)-0.5d0)
@@ -443,8 +450,8 @@ c Use zero center since coordinates have been re-centered to COM.
           endif
 c =======================================================================
           if ((dabs(zz).gt.13.5d0).or.(rr.gt.13.5d0)) then
-            nhh=nhh+dble(nhb(i))
-            noo=noo+dble(non(i))
+            nhh=nhh+nhb(i)
+            noo=noo+non(i)
             j=j+1
             goto 15
           endif
@@ -878,10 +885,8 @@ c- end: output results
 500   format(a1)
 510   format(i8,4f25.10)
 520   format(40e20.12)
-525   format(10f20.10)
 530   format(f10.3,54f25.3)
 540   format(f10.3,54f25.10)
-550   format(f15.10)
 900   format('The temperature is ',f7.2,' K')
 
       stop
