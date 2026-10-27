@@ -14,6 +14,32 @@ The analysis core is shared across systems. Cavity membership is delegated to a 
 
 The manuscript maps water concentration, average hydrogen-bond coordination, and local enthalpy as functions of axial position `z` and radial position `r`. Display interpolation smooths the rendered grids but does not add physical resolution. Hydrogen-bond maps are expressed relative to a bulk reference at 25 °C.
 
+## Nau hydration partition quantity
+
+The hydrogen-bond analysis uses an oxygen–oxygen distance of at most 3.5 Å and an O–H···O angle of at least 150° (equivalently, no more than 30° from linearity). Cavity membership is assigned using the host-specific geometric volume definition.
+
+To evaluate the hydration-partition model introduced by Werner M. Nau and co-workers, the analysis calculates
+
+```text
+𝒵 = ⟨N⟩ × (⟨n_HB⟩_bulk − ⟨n_HB⟩_pocket)
+```
+
+where:
+
+- `⟨N⟩` is the mean number of waters inside the cavity;
+- `⟨n_HB⟩_bulk` is the mean number of water–water hydrogen bonds per bulk water; and
+- `⟨n_HB⟩_pocket` is the mean number of water–water hydrogen bonds per cavity water.
+
+Thus, `(⟨n_HB⟩_bulk − ⟨n_HB⟩_pocket)` is the water–water hydrogen-bond deficiency per cavity water, and 𝒵 is that deficiency multiplied by the mean cavity population. The per-water averages in this equation must not be confused with the box-level total hydrogen-bond counts used for δ in Table 1. A positive 𝒵 denotes fewer water–water hydrogen bonds than the equivalent bulk population; 𝒵 remains a dimensionless bond-number deficit and has no intrinsic energy scale.
+
+The method follows the high-energy-water and hydration-partition treatments developed in:
+
+1. F. Biedermann, V. D. Uzunova, O. A. Scherman, W. M. Nau, and A. De Simone, “Release of high-energy water as an essential driving force for the high-affinity binding of cucurbit[n]urils,” *Journal of the American Chemical Society* **134**, 15318–15323 (2012).
+2. F. Biedermann, M. Vendruscolo, O. A. Scherman, A. De Simone, and W. M. Nau, “Cucurbit[8]uril and blue-box: high-energy water release overwhelms electrostatic interactions,” *Journal of the American Chemical Society* **135**, 14879–14888 (2013).
+3. F. Biedermann, W. M. Nau, and H.-J. Schneider, “The hydrophobic effect revisited—studies with supramolecular complexes imply high-energy water as a noncovalent driving force,” *Angewandte Chemie International Edition* **53**, 11158–11171 (2014).
+
+This project tests that structural descriptor rather than assuming its energetic interpretation: hydrogen-bond number alone does not include bond-strength heterogeneity or compensating host–water, van der Waals, electrostatic, and reorganization contributions.
+
 ## Binding thermodynamics
 
 Umbrella sampling was performed along the host–guest separation coordinate, `z`, using harmonic windows spaced every 0.04 nm. The sampled ranges were −0.4 to 2.0 nm for OA, −1.2 to 1.2 nm for CB7, and −2.0 to 2.0 nm for β-CD. β-CD rim restraints were retained during the restrained β-CD umbrella calculations.

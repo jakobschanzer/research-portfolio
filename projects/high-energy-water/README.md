@@ -45,7 +45,15 @@ The PMF well depths are approximately −110.4, −56.5, and −31.9 kJ mol⁻¹
 
 ![Hydrogen-bond accounting and binding-enthalpy comparison](figures/table1_hydrogen_bond_summary.png)
 
-The hydration partition quantity, 𝒵, and the binding hydrogen-bond balance, δ, quantify water structure, but neither reproduces the full binding enthalpy. Hydrogen-bond counts omit bond-strength heterogeneity, host–water and other water–water interactions, guest desolvation, reorganization, and direct host–guest interactions. A hydrogen-bond deficit therefore cannot by itself establish a population of energetically unfavorable water.
+To test the high-energy-water framework introduced by **Werner M. Nau and co-workers**, I calculated their hydration partition quantity, 𝒵:
+
+```text
+𝒵 = ⟨N⟩ × (⟨n_HB⟩_bulk − ⟨n_HB⟩_pocket)
+```
+
+Here, `⟨N⟩` is the mean number of waters in the host-specific cavity, while `⟨n_HB⟩_bulk` and `⟨n_HB⟩_pocket` are the mean numbers of **water–water hydrogen bonds per water** in bulk and in the cavity. The term in parentheses is therefore the mean hydrogen-bond deficiency of one cavity water relative to bulk; multiplication by occupancy converts it into the total water–water hydrogen-bond-number deficit of the resident cavity population. A larger positive 𝒵 means that more water–water hydrogen bonds are missing relative to the same number of bulk waters.
+
+𝒵 is a dimensionless hydrogen-bond count—not an energy. It does not encode hydrogen-bond strength, compensating host–water interactions, guest desolvation, solvent or host reorganization, or direct host–guest interactions. The separate quantity δ reports the net change in total hydrogen-bond counts upon binding. Neither 𝒵 nor δ reproduces the full binding enthalpy, so a positive hydrogen-bond deficit cannot by itself establish a population of energetically unfavorable water. The exact definitions, geometric hydrogen-bond criterion, and Nau-method provenance are documented in the [methods](docs/METHODS.md#nau-hydration-partition-quantity).
 
 ### Figure 3 — Occupied cavity water is enthalpically stabilized on average
 
