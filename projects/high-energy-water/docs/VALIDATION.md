@@ -27,4 +27,4 @@ It also runs a publication-boundary check that permits only the reviewed process
 - Raw trajectories and production run directories are not distributed, so this repository reproduces analysis from compact processed inputs rather than rerunning molecular simulations.
 - The checked-in volume backend has no matching production `vol` input in the archive used to curate this repository; it is compiled and documented, but a host assignment is not guessed.
 - Cross-bin covariance was unavailable for drying-transition uncertainty propagation.
-- The manuscript is in preparation; numerical conclusions remain subject to author review.
+- The manuscript is under peer review; numerical conclusions remain subject to author review.

@@ -40,7 +40,7 @@ The central result is more nuanced. Populated hydration sites are, on average, e
 
 | Project | Focus | Status |
 |---|---|---|
-| [High-energy water](projects/high-energy-water/README.md) | Confined-water thermodynamics and collective drying | Featured; manuscript in preparation |
+| [High-energy water](projects/high-energy-water/README.md) | Confined-water thermodynamics and collective drying | Featured; manuscript under peer review |
 | Project 2 | Multiscale molecular modeling | Planned |
 | Project 3 | Agentic scientific computing | Planned |
 
@@ -55,4 +55,4 @@ make test
 
 Figure regeneration and data provenance are documented inside the featured project. Raw trajectories are intentionally excluded because of size and unpublished-work controls; compact processed inputs required for the displayed analyses are included.
 
-> **Confidential research note:** this repository is private and contains results from a manuscript in preparation. Do not redistribute without the author’s permission.
+> **Confidential research note:** this repository is private and contains results from a manuscript under peer review. Do not redistribute without the author’s permission.

@@ -189,4 +189,4 @@ See [Methods](docs/METHODS.md), [Data dictionary](docs/DATA_DICTIONARY.md), [Val
 
 ## Scope and confidentiality
 
-Only the systems disclosed in the manuscript—CB7, OA, and β-CD, including the restrained β-CD protocol—are represented here. Raw trajectories are not included. This repository is private because the manuscript is in preparation; permission to view does not imply permission to redistribute.
+Only the systems disclosed in the manuscript—CB7, OA, and β-CD, including the restrained β-CD protocol—are represented here. Raw trajectories are not included. This repository is private because the manuscript is under peer review; permission to view does not imply permission to redistribute.

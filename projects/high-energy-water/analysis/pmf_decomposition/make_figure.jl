@@ -102,7 +102,7 @@ for (i,h) in enumerate(HOSTS)
     d=forces[h.name]
     plot!(p,d.z,d.g; color=BLACK, linestyle=:solid, label=L"\Delta G(z)")
     plot!(p,d.z,d.direct; color=VERMILION, linestyle=:dash, label=L"\mathrm{Direct}")
-    plot!(p,d.z,d.indirect; color=BLUE, linestyle=:dot, label=L"\mathrm{Solvent\!\!\!-mediated}")
+    plot!(p,d.z,d.indirect; color=BLUE, linestyle=:dot, label=L"\mathrm{Non\!\!\!-direct\ residual}")
     hline!(p,[0.0]; color=RGB(.72,.72,.72), linewidth=.8, label="")
     push!(panels,p)
 end
