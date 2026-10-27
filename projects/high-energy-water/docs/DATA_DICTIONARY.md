@@ -4,7 +4,7 @@ All checked-in workbooks are compact, processed inputs for the three disclosed m
 
 | File | Contents | Consumed by |
 |---|---|---|
-| `data/processed/pmf_thermodynamics.xlsx` | PMF, enthalpy, and entropy profiles for CB7, OA, and β-CD | `analysis/pmf_decomposition/` |
+| `data/processed/pmf_thermodynamics.xlsx` | WHAM-reconstructed PMFs and constant-heat-capacity-derived enthalpy, entropy, and heat-capacity profiles | `analysis/pmf_decomposition/` |
 | `data/processed/direct_residual_decomposition.xlsx` | Direct and solvent-mediated force/free-energy components | `analysis/pmf_decomposition/` |
 | `data/processed/spatial_maps.xlsx` | Axial–radial density, hydrogen-bond, and enthalpy grids | `analysis/spatial_maps/` |
 | `data/processed/occupancy_along_binding_coordinate.xlsx` | Conditional occupancy distributions along the binding coordinate | `analysis/occupancy/` |

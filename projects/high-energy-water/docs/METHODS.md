@@ -16,7 +16,20 @@ The manuscript maps water concentration, average hydrogen-bond coordination, and
 
 ## Binding thermodynamics
 
-The potential of mean force is reported along the host–guest separation coordinate and decomposed into direct host–guest and solvent-mediated contributions. Enthalpic and entropic terms are interpreted together; a favorable binding free energy does not imply that each microscopic contribution is favorable.
+Umbrella sampling was performed along the host–guest separation coordinate, `z`, using harmonic windows spaced every 0.04 nm. The sampled ranges were −0.4 to 2.0 nm for OA, −1.2 to 1.2 nm for CB7, and −2.0 to 2.0 nm for β-CD. β-CD rim restraints were retained during the restrained β-CD umbrella calculations.
+
+Replica-exchange molecular dynamics was applied to the umbrella simulations using 20 temperatures from 5 to 60 °C. Exchanges were evaluated with the Metropolis criterion, and the biased distributions were combined with the weighted histogram analysis method (WHAM) to reconstruct `ΔG_PMF(z,T)`.
+
+At every `z`, the temperature-dependent PMF was fit by least squares to a constant-heat-capacity model referenced to `T_ref = 298.15 K`:
+
+```text
+ΔG_PMF(z,T) = ΔH_ref(z) − TΔS_ref(z)
+             + ΔCp(z)[(T − T_ref) − T ln(T/T_ref)]
+```
+
+The fit returns `ΔH_ref(z)`, `ΔS_ref(z)`, and `ΔCp(z)`, enabling the free-energy profile to be interpreted in terms of enthalpic and entropic contributions at the reference temperature.
+
+The potential of mean force is also decomposed into the direct host–guest interaction and an operational residual. The direct term is the sum of Coulombic and Lennard–Jones host–guest energies. The residual, `G_res(z) = ΔG_PMF(z) − U_direct(z)`, is not a uniquely isolated solvent free energy: it may also include entropy, host reorganization, and restraint-related contributions absent from the direct interaction energy. Enthalpic and entropic terms must therefore be interpreted together; a favorable binding free energy does not imply that every microscopic contribution is favorable.
 
 ## Occupancy and drying
 
@@ -35,4 +48,3 @@ The calculations support three claims:
 3. Drying is not, by itself, evidence that release of unfavorable water drives binding.
 
 They do not establish a universal mechanism for every host–guest system.
-

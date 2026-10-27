@@ -24,7 +24,16 @@ OA, restrained β-CD, and CB7 differ in shape, portal geometry, flexibility, and
 
 ![PMF thermodynamic and direct-residual decomposition](figures/figure2_pmf_decomposition.png)
 
-The top row decomposes the potential of mean force into enthalpic and entropic terms; the bottom row compares the PMF with the direct host–guest interaction and the operational non-direct residual.
+I obtained the temperature-dependent PMFs using **replica-exchange molecular dynamics combined with umbrella sampling**. Harmonic umbrella windows were placed every 0.04 nm along the host–guest separation coordinate. Exchanges were attempted across 20 replicas spanning 5–60 °C, and the biased distributions were combined with WHAM to reconstruct ΔG<sub>PMF</sub>(*z*,*T*).
+
+At each position *z*, I fit the temperature-dependent PMF to a constant-heat-capacity model referenced to 298.15 K:
+
+```text
+ΔG_PMF(z,T) = ΔH_ref(z) − TΔS_ref(z)
+             + ΔCp(z)[(T − T_ref) − T ln(T/T_ref)]
+```
+
+This fit separates the PMF into position-dependent enthalpic, entropic, and heat-capacity contributions: ΔH<sub>ref</sub>(*z*), ΔS<sub>ref</sub>(*z*), and ΔCp(*z*). The top row shows ΔG(*z*), ΔH(*z*), and −TΔS(*z*) at the reference temperature; the bottom row compares the PMF with the direct host–guest interaction and the operational non-direct residual.
 
 - CB7 binds almost entirely enthalpically, and its direct host–guest interaction nearly reproduces the PMF.
 - OA is also enthalpy dominated, but its residual opposes binding near the minimum.
@@ -103,24 +112,29 @@ The combined evidence supports a specific mechanism rather than a slogan:
 ## Computational workflow
 
 ```text
-trajectory / energies
+simulation trajectories / energies
         │
+        ├── replica-exchange umbrella sampling
+        │       └── WHAM ΔG_PMF(z,T)
+        │               └── constant-Cp fit → ΔH(z), ΔS(z), ΔCp(z)
         ├── JANAL (Fortran) ── density, energy, chemical potential,
         │                       fluctuations, occupancy distributions
         ├── H-bond analysis ── water–water and water–host networks
         └── geometry tools ─── host orientation and cavity membership
-                                  │
-                                  ▼
-                         processed workbooks
-                                  │
-                                  ▼
-                 Julia analysis + uncertainty propagation
-                                  │
-                                  ▼
-                  manuscript figures and quantitative checks
+                                      │
+                                      ▼
+                             processed workbooks
+                                      │
+                                      ▼
+                     Julia analysis + uncertainty propagation
+                                      │
+                                      ▼
+                      manuscript figures and quantitative checks
 ```
 
 The production design separates a shared JANAL analysis core from a geometry-specific cavity module. Each host uses its own `vol` input and, where required by its geometry, an adapted `vol.f` backend. The checked-in backend is a six-plane polyhedral implementation; it demonstrates that interface rather than claiming that one volume definition fits every host.
+
+The repository reproduces the displayed analysis from compact processed workbooks. The underlying replica-exchange umbrella trajectories and full WHAM production directories are excluded because of size and manuscript confidentiality.
 
 ## Repository tour
 
