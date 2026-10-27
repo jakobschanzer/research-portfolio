@@ -12,7 +12,7 @@ A common model of molecular recognition proposes that confinement creates energe
 
 The simulations show that **collective drying is real for CB7 and OA, but it is not evidence that their resident cavity waters were high in energy**. Restrained β-CD provides the contrasting case: it loses water gradually rather than through a comparable two-state transition.
 
-## The manuscript story, figure by figure
+## The story, figure by figure
 
 ### Figure 1 — Three cavities with different architectures
 
@@ -67,7 +67,7 @@ Separately, [`hb4.f`](src/fortran/hydrogen_bonds/hb4.f) counted water–water an
 
 ![Mean cavity occupancy as a function of temperature](figures/figure3_temperature_response.png)
 
-These temperature-response results come from the independent 400 ns **unbiased NPT simulations** analyzed with JANAL, not from the REMD/umbrella trajectories. Mean cavity occupancy decreases from 5 to 95 °C for every host model: approximately 6.40→5.36 waters for CB7, 4.20→3.04 for OA, 4.87→4.31 for restrained β-CD, and 3.69→2.92 for unrestrained β-CD. The revised unrestrained β-CD 25 °C run gives `⟨N⟩ = 3.501`, removing the earlier offset and producing a nearly linear temperature response (`R² = 0.989` for a descriptive linear fit). Its uncertainty is smaller than the plotted symbol, so no separate error bar is visible for that point.
+These temperature-response results come from the independent 400 ns **unbiased NPT simulations** analyzed with JANAL, not from the REMD/umbrella trajectories. Mean cavity occupancy decreases from 5 to 95 °C for every host model: approximately 6.40→5.36 waters for CB7, 4.20→3.04 for OA, 4.87→4.31 for restrained β-CD, and 3.69→2.92 for unrestrained β-CD.  Uncertainty is generally smaller than the plotted symbol, so no separate error bar is visible for some points.
 
 The thermodynamic connection is
 
