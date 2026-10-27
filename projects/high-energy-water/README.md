@@ -3,6 +3,22 @@
 **A computational study of hydration thermodynamics and collective drying in CB7, OA, and β-cyclodextrin**  
 Jakob L. Schanzer · manuscript submitted and under peer review
 
+**Project ownership:** I performed all work presented in this repository, including the simulation design and execution, code development and adaptation, analysis, figure production, and scientific interpretation.
+
+## Figures and code — direct links
+
+**Main results:** [Figure 1 · host systems](figures/figure1_host_systems.png) · [Figure 2 · PMF decomposition](figures/figure2_pmf_decomposition.png) · [Table 1 · hydrogen-bond accounting](figures/table1_hydrogen_bond_summary.png) · [Figure 3 · temperature response](figures/figure3_temperature_response.png) · [Figure 4 · spatial maps](figures/figure4_spatial_maps.png) · [Figure 5 · mean occupancy](figures/figure5_mean_occupancy_vs_z.png) · [Figure 6 · occupancy distributions](figures/figure6_occupancy_distributions.svg)
+
+**Detailed P(N|z) panels:** [CB7](figures/cb7_pn_lnpn_paired.png) · [OA](figures/oa_pn_lnpn_paired.png) · [restrained β-CD](figures/betacd_pn_lnpn_paired.png) · [all figure files and formats](figures/)
+
+**Fortran analysis:** [`janal.f` · host analysis](src/fortran/host_analysis/janal.f) · [`vol.f` · cavity geometry](src/fortran/host_analysis/vol.f) · [`hb4.f` · hydrogen bonds](src/fortran/hydrogen_bonds/hb4.f) · [`ring_angle.f` · β-CD restraint geometry](src/fortran/ring_geometry/ring_angle.f)
+
+**Python analysis:** [`compile_hbond_outputs.py`](src/python/compile_hbond_outputs.py) · [`count_cylindrical_occupancy.py`](src/python/water_count/count_cylindrical_occupancy.py) · [`count_polyhedral_occupancy.py`](src/python/water_count/count_polyhedral_occupancy.py)
+
+**Julia analysis and figure generation:** [PMF decomposition](analysis/pmf_decomposition/make_figure.jl) · [temperature response](analysis/temperature_response/make_figure.jl) · [spatial maps](analysis/spatial_maps/make_figure.jl) · [occupancy figures](analysis/occupancy/make_figures.jl) · [drying-transition analysis](analysis/occupancy/analyze_drying_transition.jl) · [P(N|z) distributions](analysis/occupancy_distributions/make_figure.jl)
+
+**Workflow and validation:** [`run_hbond_analysis.sh`](scripts/run_hbond_analysis.sh) · [`check_publication_boundary.py`](scripts/check_publication_boundary.py) · [`test_compile_hbond_outputs.py`](tests/test_compile_hbond_outputs.py)
+
 ## The scientific question
 
 A common model of molecular recognition proposes that confinement creates energetically unfavorable—or “high-energy”—water and that releasing this water drives guest binding. This work separates two ideas that are often conflated:
