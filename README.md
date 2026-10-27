@@ -9,7 +9,7 @@ This private portfolio highlights work across statistical mechanics, molecular s
 | Area | Demonstrated capabilities |
 |---|---|
 | **Computational methods** | Molecular dynamics, replica-exchange molecular dynamics (REMD), umbrella sampling, WHAM, MBAR, spatial thermodynamics, occupancy-fluctuation analysis, and uncertainty quantification |
-| **Scientific software** | Fortran analysis programs and geometry-specific adaptations, Python post-processing and tests, Julia analysis and visualization, version control, and continuous integration |
+| **Scientific software** | GROMACS, Fortran analysis programs and geometry-specific adaptations, Python post-processing and tests, Julia analysis and visualization, version control, and continuous integration |
 | **HPC-scale workflows** | Parallel replica and umbrella-window designs, multi-temperature simulation campaigns, and large-scale trajectory analysis |
 
 ## Current research: water in molecular cavities
