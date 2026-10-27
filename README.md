@@ -1,10 +1,10 @@
-# Computational Molecular Science Portfolio
+# Jakob L. Schanzer — Research Portfolio
 
-Research software and reproducible analysis by **Jakob L. Schanzer**.
+Computational molecular science, research software, and reproducible analysis by **Jakob L. Schanzer**.
 
-This private portfolio highlights scientific computing across statistical mechanics, molecular simulation analysis, Fortran, Python, Julia, uncertainty quantification, and agent-assisted research engineering.
+This private portfolio highlights work across statistical mechanics, molecular simulation, Fortran, Python, Julia, uncertainty quantification, and agent-assisted research engineering. All simulation design and execution, scientific code development and adaptation, analysis, visualization, and interpretation presented here were performed by Jakob L. Schanzer.
 
-## Featured project: water in molecular cavities
+## Current research: water in molecular cavities
 
 [![Host systems: CB7, OA, and beta-cyclodextrin](projects/high-energy-water/figures/figure1_host_systems.png)](projects/high-energy-water/README.md)
 
@@ -16,7 +16,7 @@ The central result is more nuanced. Populated hydration sites are, on average, e
 
 [Explore the project, figures, physics, and code →](projects/high-energy-water/README.md)
 
-## Featured scientific codes
+## Scientific software
 
 | Code | Analysis performed |
 |---|---|
@@ -36,14 +36,6 @@ The central result is more nuanced. Populated hydration sites are, on average, e
 - Geometry-aware analysis through a shared JANAL core and host-specific volume backends
 - CI compilation/tests plus a constrained **Codex agent workflow** with explicit validation gates
 
-## Portfolio roadmap
-
-| Project | Focus | Status |
-|---|---|---|
-| [High-energy water](projects/high-energy-water/README.md) | Confined-water thermodynamics and collective drying | Featured; manuscript under peer review |
-| Project 2 | Multiscale molecular modeling | Planned |
-| Project 3 | Agentic scientific computing | Planned |
-
 ## Reproducibility
 
 From the repository root:
@@ -53,6 +45,6 @@ make check
 make test
 ```
 
-Figure regeneration and data provenance are documented inside the featured project. Raw trajectories are intentionally excluded because of size and unpublished-work controls; compact processed inputs required for the displayed analyses are included.
+Figure regeneration and data provenance are documented inside the research project. Raw trajectories are intentionally excluded because of size and unpublished-work controls; compact processed inputs required for the displayed analyses are included.
 
 > **Confidential research note:** this repository is private and contains results from a manuscript under peer review. Do not redistribute without the author’s permission.
