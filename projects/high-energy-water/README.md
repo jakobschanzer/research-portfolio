@@ -1,7 +1,7 @@
 # Molecular Confinement Does Not Create High-Energy Water
 
 **A computational study of hydration thermodynamics and collective drying in CB7, OA, and β-cyclodextrin**  
-Jakob L. Schanzer · manuscript submitted and under peer review
+Jakob L. Schanzer · manuscript in final preparation
 
 **Scientific ownership:** I performed the underlying scientific work: simulation design and execution, development or adaptation of the core analysis programs, and data analysis. Scientific interpretation was done in conjunction with my advisor, Hank Ashbaugh, and our experimental collaborator, Bruce Gibb. I directed and verified Codex while it assembled the reproducible portfolio layer described below; scientific interpretation and publication decisions remained human-controlled.
 
