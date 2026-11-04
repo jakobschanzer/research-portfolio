@@ -114,7 +114,7 @@ Some dense, low-enthalpy sites remain deficient in water–water hydrogen bonds.
 
 ![Mean cavity occupancy along the host-guest binding coordinate](figures/figure5_mean_occupancy_vs_z.png)
 
-For the drying analysis, every biased umbrella window was rerun for 100 ns **without replica exchange**; these conventional umbrella trajectories were separate from both the REMD thermodynamic calculations and the unbiased JANAL calculations. Mean occupancy identifies where water leaves as cyclohexane enters. OA passes from 25% to 75% empty over approximately 0.61 Å, and CB7 over 0.92 Å. Restrained β-CD responds more gradually and asymmetrically: approximately 2.21 Å through its negative-*z* narrower primary portal and 1.19 Å through its positive-*z* wider secondary portal.
+For the drying analysis, every biased umbrella window was rerun for 100 ns **without replica exchange**; these conventional umbrella trajectories were separate from both the REMD thermodynamic calculations and the unbiased JANAL calculations. Mean occupancy identifies where water leaves as cyclohexane enters. The corrected CB7 water-counting analysis gives a 25–75% emptying width of **0.960 Å**, a midpoint of **3.807 Å**, and an absolute occupancy slope of **2.902 waters Å⁻¹**. OA passes from 25% to 75% empty over approximately 0.61 Å. Restrained β-CD responds more gradually and asymmetrically: approximately 2.21 Å through its negative-*z* narrower primary portal and 1.19 Å through its positive-*z* wider secondary portal. Gray bands mark the 25–75% intervals and the red dashed segments show the corresponding secant slopes.
 
 These widths quantify an equilibrium response to guest position, not a kinetic drying rate. More importantly, a mean curve alone cannot distinguish concerted switching from the sequential loss of independent waters. That distinction requires the complete occupancy distributions.
 
@@ -124,11 +124,11 @@ These widths quantify an equilibrium response to guest position, not a kinetic d
 
 Each column pairs the conditional occupancy distribution, P(N|*z*), with ln P(N|*z*) as the guest approaches. The schematics use one coordinate convention throughout: **negative *z* is left and positive *z* is right**; red is the host and blue is cyclohexane.
 
-- **CB7:** near the portal, wet and dry populations coexist. Around *z* = 4.0 Å, probability is distributed between states centered near two and four waters, with a less probable intermediate occupancy.
+- **CB7:** the corrected distributions show resolved bimodality specifically at *z* = 3.6 and 4.0 Å. At 3.6 Å the modes occur near *N* = 2 and 4; at 4.0 Å they occur near *N* = 2 and 5. Each pair is separated by a less probable intermediate occupancy. The adjacent 3.2 and 4.4 Å windows contain a single resolved basin or shoulder rather than two resolved maxima.
 - **OA:** at *z* = 3.6 Å, a wet maximum near *N* = 4 coexists with a dry *N* = 0 population. By *z* = 3.2 Å the dry state is most probable while the wet basin remains populated.
 - **Restrained β-CD:** the distributions shift progressively toward lower *N* from either portal. Persistent wet/dry coexistence is absent, indicating continuous dehydration rather than the same collective transition.
 
-The dashed red curves extrapolate a quadratic fit to the wet-state basin. Blue points mark low-occupancy probabilities enhanced above that near-Gaussian expectation. These non-Gaussian low-*N* tails develop before the cavity becomes dry and are the fluctuation signature of proximity to a drying transition. They are pronounced for CB7 and OA and develop more weakly and gradually for β-CD.
+The dashed red curves extrapolate a quadratic fit to the wet-state basin. Blue points mark low-occupancy probabilities enhanced above that near-Gaussian expectation. These non-Gaussian low-*N* tails develop before the cavity becomes dry and are the fluctuation signature of proximity to a drying transition. They are pronounced for CB7 and OA and develop more weakly and gradually for β-CD. For CB7, a window is labeled “resolved bimodal” only when significant low- and high-occupancy local maxima are separated by an intervening minimum; the complete classification and every quadratic fit are exported to [`pn_fattail_fits.xlsx`](data/derived/pn_fattail_fits.xlsx).
 
 <details>
 <summary><strong>Open host-specific P(N|z) panels for closer inspection</strong></summary>

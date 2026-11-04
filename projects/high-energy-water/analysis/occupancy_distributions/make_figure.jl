@@ -8,6 +8,7 @@ using Printf
 const HERE = @__DIR__
 const PROJECT_ROOT = normpath(joinpath(HERE, "..", ".."))
 const INPUT = joinpath(PROJECT_ROOT, "data", "processed", "occupancy_along_binding_coordinate.xlsx")
+const CB7_INPUT = joinpath(PROJECT_ROOT, "data", "processed", "cb7_occupancy_rerun.xlsx")
 const SVG_OUT = joinpath(PROJECT_ROOT, "figures", "figure6_occupancy_distributions.svg")
 const AUDIT_OUT = joinpath(PROJECT_ROOT, "data", "derived", "pn_fattail_fits.xlsx")
 
@@ -77,9 +78,11 @@ function read_oa(sheet)
 end
 
 cb7 = nothing; oa = nothing; cd = nothing
+XLSX.openxlsx(CB7_INPUT) do workbook
+    global cb7 = read_host(workbook["P(N|z)"];
+        header_row=1, first_col=2, last_col=27, n_rows=10, explicit_n_col=1)
+end
 XLSX.openxlsx(INPUT) do workbook
-    global cb7 = read_host(workbook["CB7"];
-        header_row=2, first_col=8, last_col=33, n_rows=10)
     global oa = read_oa(workbook["OA"])
     global cd = read_host(workbook["CD_Restrained"];
         header_row=3, first_col=9, last_col=59, n_rows=10, explicit_n_col=8)
@@ -126,6 +129,36 @@ function quadratic_fit(n, probability)
     delta_zero = probability[1] > 0 ? log(probability[1]) - fitted_zero : NaN
     FitResult(coefficients, fit_indices, mode_index, r_squared, delta_zero,
         !isempty(wet_candidates) && coefficients[1] < 0)
+end
+
+"""Identify resolved low- and high-occupancy basins separated by a probability minimum."""
+function state_classification(n, probability)
+    threshold = 0.10maximum(probability)
+    local_maxima = Int[]
+    for i in eachindex(probability)
+        left = i == firstindex(probability) ? -Inf : probability[i - 1]
+        right = i == lastindex(probability) ? -Inf : probability[i + 1]
+        probability[i] >= left && probability[i] >= right &&
+            probability[i] >= threshold && push!(local_maxima, i)
+    end
+    low_candidates = [i for i in local_maxima if n[i] <= 2]
+    high_candidates = [i for i in local_maxima if n[i] >= 4]
+    if isempty(low_candidates) || isempty(high_candidates)
+        return (classification="single basin/shoulder", low_index=0, high_index=0,
+            valley_index=0, valley_ratio=NaN)
+    end
+    low = low_candidates[argmax(probability[low_candidates])]
+    high = high_candidates[argmax(probability[high_candidates])]
+    low < high || return (classification="single basin/shoulder", low_index=0,
+        high_index=0, valley_index=0, valley_ratio=NaN)
+    between = collect(low+1:high-1)
+    isempty(between) && return (classification="single basin/shoulder", low_index=0,
+        high_index=0, valley_index=0, valley_ratio=NaN)
+    valley = between[argmin(probability[between])]
+    ratio = probability[valley] / min(probability[low], probability[high])
+    resolved = probability[valley] < min(probability[low], probability[high])
+    (classification=resolved ? "resolved bimodal" : "single basin/shoulder",
+        low_index=low, high_index=high, valley_index=valley, valley_ratio=ratio)
 end
 
 function image_uri(path)
@@ -267,12 +300,16 @@ function node_svg(parts, records, host, data, column, y, source_z, display_z, ta
     x = node_x(column)
     probability = selected_distribution(data, source_z)
     fit = quadratic_fit(data.n, probability)
+    state = state_classification(data.n, probability)
     label = abs(display_z) < 1e-10 ? "z = 0 Å" : @sprintf("z = %+.1f Å", display_z)
     if display_z > 0 && (host == "CB7" || host == "OA")
         label = @sprintf("z = %.1f Å", display_z)
     end
     push!(parts, "<text x=\"$(x+NODE_W/2)\" y=\"$(y+15)\" class=\"distance\" text-anchor=\"middle\">$label</text>")
     schematic_svg(parts, host, x, y+20, display_z; show_axis_labels=column == 1)
+    if host == "CB7" && state.classification == "resolved bimodal"
+        push!(parts, "<text x=\"$(x+NODE_W-8)\" y=\"$(y+120)\" class=\"state\" text-anchor=\"end\">resolved bimodal</text>")
+    end
     chart_svg(parts, x, y+125, NODE_W, 116, data.n, probability, fit, :probability, "p_$tag")
     chart_svg(parts, x, y+254, NODE_W, 132, data.n, probability, fit, :logarithm, "l_$tag")
     push!(records, (
@@ -282,6 +319,7 @@ function node_svg(parts, records, host, data, column, y, source_z, display_z, ta
         a=fit.coefficients[1], b=fit.coefficients[2], c=fit.coefficients[3],
         r_squared=fit.r_squared, delta_ln_p0=fit.delta_ln_p0,
         wet_basin_fit_shown=fit.has_wet_basin,
+        state_classification=state.classification,
     ))
 end
 
@@ -289,7 +327,7 @@ parts = String[
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
     "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"$(WIDTH)\" height=\"$(HEIGHT)\" viewBox=\"0 0 $(WIDTH) $(HEIGHT)\">",
     "<rect width=\"100%\" height=\"100%\" fill=\"white\"/>",
-    "<style>text{font-family:Arial,Helvetica,sans-serif;fill:#111}.panel{font-size:24px;font-weight:700}.host{font-size:22px;font-weight:600}.branch{font-size:15px;font-weight:600}.distance{font-size:13px;font-weight:600}.axis{font-size:10px}.coordinate{font-size:9px;fill:#555}.tick{font-size:8.5px}.italic{font-style:italic}.legend{font-size:12px}</style>",
+    "<style>text{font-family:Arial,Helvetica,sans-serif;fill:#111}.panel{font-size:24px;font-weight:700}.host{font-size:22px;font-weight:600}.branch{font-size:15px;font-weight:600}.distance{font-size:13px;font-weight:600}.state{font-size:9px;font-weight:600;fill:#6b3a00}.axis{font-size:10px}.coordinate{font-size:9px;fill:#555}.tick{font-size:8.5px}.italic{font-style:italic}.legend{font-size:12px}</style>",
     "<defs><marker id=\"arrow\" markerWidth=\"8\" markerHeight=\"8\" refX=\"7\" refY=\"4\" orient=\"auto\"><path d=\"M0,0 L8,4 L0,8 Z\" fill=\"#555\"/></marker></defs>",
 ]
 
@@ -337,14 +375,31 @@ XLSX.openxlsx(AUDIT_OUT, mode="w") do workbook
     XLSX.rename!(sheet, "Quadratic fits")
     headers = ["host", "display_z_A", "source_z_A", "wet_mode_N", "fit_N_values",
         "quadratic_a", "quadratic_b", "quadratic_c", "fit_R_squared", "lnP0_minus_fit",
-        "wet_basin_fit_shown"]
-    sheet["A1:K1"] = reshape(headers, 1, :)
+        "wet_basin_fit_shown", "state_classification"]
+    sheet["A1:L1"] = reshape(headers, 1, :)
     for (row, record) in enumerate(records)
         values = [record.host, record.display_z, record.source_z, record.mode_n,
             record.fit_n, record.a, record.b, record.c, record.r_squared, record.delta_ln_p0,
-            record.wet_basin_fit_shown]
+            record.wet_basin_fit_shown, record.state_classification]
         for (column, value) in enumerate(values)
             sheet[row + 1, column] = value
+        end
+    end
+    states = XLSX.addsheet!(workbook, "CB7 state classification")
+    state_headers = ["z_A", "classification", "low_mode_N", "high_mode_N",
+        "valley_N", "valley_to_smaller_peak_ratio", "criterion"]
+    states["A1:G1"] = reshape(state_headers, 1, :)
+    for (j, z) in enumerate(cb7.z)
+        probability = cb7.p[:, j] ./ sum(cb7.p[:, j])
+        state = state_classification(cb7.n, probability)
+        values = Any[z, state.classification,
+            state.low_index == 0 ? missing : cb7.n[state.low_index],
+            state.high_index == 0 ? missing : cb7.n[state.high_index],
+            state.valley_index == 0 ? missing : cb7.n[state.valley_index],
+            state.valley_ratio,
+            "local low mode N<=2 and high mode N>=4; each >=10% of global peak; intervening minimum below both peaks"]
+        for (column, value) in enumerate(values)
+            states[j + 1, column] = value
         end
     end
     notes = XLSX.addsheet!(workbook, "Method")
@@ -355,6 +410,8 @@ XLSX.openxlsx(AUDIT_OUT, mode="w") do workbook
         "fit window" => "wet-basin mode minus one occupancy through mode plus two occupancies; no fit is displayed when a wet basin is absent",
         "model" => "ln P_fit = a N^2 + b N + c, unweighted least squares",
         "fat-tail marker" => "low-N observed point at least 0.75 natural-log units above the extrapolated quadratic fit",
+        "CB7 bimodality" => "resolved only where significant low- and high-occupancy local maxima are separated by an intervening probability minimum; all rerun windows are audited",
+        "CB7 rerun result" => "resolved bimodality at z = 3.6 and 4.0 A; adjacent windows are classified as single basin/shoulder",
         "OA z=10 display" => "uses the equivalent separated-state P(N|z) distribution sampled at z=9.6 A, as previously authorized",
     ]
     for (row, pair) in enumerate(method_rows)

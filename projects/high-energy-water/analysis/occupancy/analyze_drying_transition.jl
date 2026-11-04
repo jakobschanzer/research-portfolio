@@ -8,6 +8,7 @@ using Statistics
 const HERE = @__DIR__
 const PROJECT_ROOT = normpath(joinpath(HERE, "..", ".."))
 const INPUT = joinpath(PROJECT_ROOT, "data", "processed", "occupancy_along_binding_coordinate.xlsx")
+const CB7_INPUT = joinpath(PROJECT_ROOT, "data", "processed", "cb7_occupancy_rerun.xlsx")
 const OUTPUT = joinpath(PROJECT_ROOT, "data", "derived", "drying_transition_analysis.xlsx")
 
 parse_z(value) = parse(Float64, replace(string(value), "z=" => ""))
@@ -131,16 +132,25 @@ function propagated_widths(branch::Branch, nominal; trials=50_000, seed=20260917
     )
 end
 
-cb7_z = Float64[]; cb7_mean = Float64[]
+cb7_z = Float64[]; cb7_mean = Float64[]; cb7_sem = Float64[]
 oa_z = Float64[]; oa_mean = Float64[]; oa_sem = Float64[]
 cd_z = Float64[]; cd_mean = Float64[]
 
+# The rerun CB7 workbook directly tabulates mean occupancy and its SEM on the
+# complete coordinate axis. Analyze the non-negative branch because CB7 is
+# symmetric, rather than reconstructing the curve from the superseded P(N|z).
+XLSX.openxlsx(CB7_INPUT) do workbook
+    sheet = workbook["Mean occupancy"]
+    for row in 2:52
+        z = Float64(sheet[row, 1])
+        z < 0 && continue
+        push!(cb7_z, z)
+        push!(cb7_mean, Float64(sheet[row, 2]))
+        push!(cb7_sem, Float64(sheet[row, 3]))
+    end
+end
+
 XLSX.openxlsx(INPUT) do workbook
-    global cb7_z, cb7_mean = read_probability_curve(
-        workbook["CB7"];
-        header_row=2, first_col=8, last_col=33, first_row=3,
-        n_values=collect(0.0:9.0),
-    )
     oa = workbook["OA"]
     global oa_z = Float64[oa[row, 1] for row in 4:37]
     global oa_mean = Float64[oa[row, 2] for row in 4:37]
@@ -157,9 +167,7 @@ XLSX.openxlsx(INPUT) do workbook
     )
 end
 
-cb7_sem_lookup = read_sem(joinpath(PROJECT_ROOT, "data", "derived", "cb7_cluster_bootstrap_sem.tsv"))
 cd_sem_lookup = read_sem(joinpath(PROJECT_ROOT, "data", "derived", "betacd_cluster_bootstrap_sem.tsv"))
-cb7_sem = Float64[cb7_sem_lookup[z] for z in cb7_z]
 cd_sem = Float64[cd_sem_lookup[z] for z in cd_z]
 
 branches = Branch[
@@ -246,6 +254,7 @@ XLSX.openxlsx(OUTPUT, mode="w") do workbook
         "wet plateau" => "arithmetic mean over |z| >= 6 A on the relevant branch",
         "dry plateau" => "arithmetic mean over |z| <= 0.8 A on the relevant branch",
         "uncertainty" => "approximate pointwise-SEM propagation with 50,000 independent Gaussian draws; covariance between z bins was unavailable",
+        "CB7 source" => "rerun direct mean_N and SEM_N from cb7_occupancy_rerun.xlsx; non-negative branch analyzed because CB7 is symmetric",
         "interpretation" => "sharp/gradual refers to change with guest position, not kinetic drying rate",
     ]
     for (index, pair) in enumerate(definitions)

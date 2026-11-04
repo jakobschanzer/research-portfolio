@@ -9,6 +9,7 @@ using LaTeXStrings
 const HERE=@__DIR__
 const PROJECT_ROOT=normpath(joinpath(HERE,"..",".."))
 const INPUT=joinpath(PROJECT_ROOT,"data","processed","occupancy_along_binding_coordinate.xlsx")
+const CB7_INPUT=joinpath(PROJECT_ROOT,"data","processed","cb7_occupancy_rerun.xlsx")
 const OUTPUT_DIR=joinpath(PROJECT_ROOT,"figures")
 const DERIVED_DIR=joinpath(PROJECT_ROOT,"data","derived")
 
@@ -95,62 +96,67 @@ function read_oa(sh)
     data,curve,raw_headers,matched_mean
 end
 
-cb7=nothing; oa=nothing; oa_curve=nothing; oa_raw_headers=nothing; oa_matched_mean=nothing; cd=nothing
+cb7=nothing; cb7_curve=nothing; oa=nothing; oa_curve=nothing; oa_raw_headers=nothing; oa_matched_mean=nothing; cd=nothing
+XLSX.openxlsx(CB7_INPUT) do xf
+    global cb7=read_host(xf["P(N|z)"];header_row=1,first_col=2,last_col=27,
+        n_rows=10,explicit_n_col=1)
+    sh=xf["Mean occupancy"]
+    z=Float64[sh[r,1] for r in 2:52]
+    mean_n=Float64[sh[r,2] for r in 2:52]
+    sem=Float64[sh[r,3] for r in 2:52]
+    sd=Float64[cb7.sd[argmin(abs.(cb7.z .- abs(value)))] for value in z]
+    global cb7_curve=CurveData(z,mean_n,sd,sem)
+
+    positive=findall(>=(0.0),z)
+    maximum(abs.(mean_n[positive] .- cb7.mean)) < 1e-3 ||
+        error("CB7 P(N|z) moments do not match the rerun mean-occupancy curve")
+end
 XLSX.openxlsx(INPUT) do xf
-    global cb7=read_host(xf["CB7"];header_row=2,first_col=8,last_col=33,n_rows=10)
     global oa,oa_curve,oa_raw_headers,oa_matched_mean=read_oa(xf["OA"])
     global cd=read_host(xf["CD_Restrained"];header_row=3,first_col=9,last_col=59,n_rows=10,explicit_n_col=8)
 end
-
-# CB7 was sampled on the non-negative half-axis and is symmetric about z = 0.
-# Mirror every positive-z P(N|z) column onto negative z, retaining z = 0 once.
-function mirror_about_zero(data)
-    positive=findall(>(0.0),data.z)
-    order=reverse(positive)
-    z=vcat(-data.z[order],data.z)
-    p=hcat(data.p[:,order],data.p)
-    OccupancyData(z,data.n,p,vcat(data.mean[order],data.mean),
-        vcat(data.variance[order],data.variance),vcat(data.sd[order],data.sd))
-end
-cb7=mirror_about_zero(cb7)
 
 function read_sem(path)
     raw=readdlm(path,'\t',Float64;skipstart=1)
     Dict(raw[i,1]=>raw[i,2] for i in axes(raw,1))
 end
 
-cb7_sem_positive=read_sem(joinpath(DERIVED_DIR,"cb7_cluster_bootstrap_sem.tsv"))
 cd_sem_by_z=read_sem(joinpath(DERIVED_DIR,"betacd_cluster_bootstrap_sem.tsv"))
-cb7_sem_by_z=Dict(z=>cb7_sem_positive[abs(z)] for z in cb7.z)
 
 function aligned_sem(data,lookup)
     [get(lookup,z,NaN) for z in data.z]
 end
-cb7_sem=aligned_sem(cb7,cb7_sem_by_z)
 cd_sem=aligned_sem(cd,cd_sem_by_z)
-any(isnan,cb7_sem) && error("Missing CB7 SEM value")
 any(isnan,cd_sem) && error("Missing beta-CD SEM value")
 
-function read_transition_bands(path)
-    bands=Dict{Tuple{String,String},Tuple{Float64,Float64}}()
+function read_transitions(path)
+    transitions=Dict{Tuple{String,String},NamedTuple}()
     XLSX.openxlsx(path) do xf
         sh=xf["Summary"]
         for row in 2:5
             host=string(sh[row,1]); branch=string(sh[row,2])
+            wet=Float64(sh[row,3]); dry=Float64(sh[row,4]); span=wet-dry
             z25=Float64(sh[row,5]); z75=Float64(sh[row,7])
-            bands[(host,branch)]=(min(z25,z75),max(z25,z75))
+            transitions[(host,branch)]=(
+                lower=min(z25,z75),upper=max(z25,z75),z25=z25,z75=z75,
+                n25=wet-0.25span,n75=wet-0.75span,
+                slope=Float64(sh[row,11]),
+            )
         end
     end
-    bands
+    transitions
 end
 
-transition_bands=read_transition_bands(joinpath(DERIVED_DIR,"drying_transition_analysis.xlsx"))
-cb7_positive=transition_bands[("CB7","symmetric portal")]
-cb7_bands=[(-cb7_positive[2],-cb7_positive[1]),cb7_positive]
-oa_bands=[transition_bands[("OA","open portal")]]
-cd_bands=[
-    transition_bands[("restrained β-CD","negative-z narrower primary portal")],
-    transition_bands[("restrained β-CD","positive-z wider secondary portal")],
+transitions=read_transitions(joinpath(DERIVED_DIR,"drying_transition_analysis.xlsx"))
+cb7_positive=transitions[("CB7","symmetric portal")]
+cb7_negative=(lower=-cb7_positive.upper,upper=-cb7_positive.lower,
+    z25=-cb7_positive.z25,z75=-cb7_positive.z75,n25=cb7_positive.n25,
+    n75=cb7_positive.n75,slope=cb7_positive.slope)
+cb7_transitions=[cb7_negative,cb7_positive]
+oa_transitions=[transitions[("OA","open portal")]]
+cd_transitions=[
+    transitions[("restrained β-CD","negative-z narrower primary portal")],
+    transitions[("restrained β-CD","positive-z wider secondary portal")],
 ]
 
 const CB7_SELECTED=[2.8,3.2,3.6,4.0,4.4,4.8]
@@ -168,14 +174,17 @@ function selected_index(data,z)
     i
 end
 
-function nz_panel(z,mean,sem,title_text,letter,xlims,xticks,bands)
+function nz_panel(z,mean,sem,title_text,letter,xlims,xticks,transition_data)
     p=plot(;xlabel=L"z\ (\mathrm{\AA})",ylabel=L"\langle N\rangle",
         xlims=xlims,xticks=xticks,ylims=(0,7),yticks=0:1:7,
         title=title_text,framestyle=:box,margin=6Plots.mm)
-    for (lower,upper) in bands
-        vspan!(p,[lower,upper];color=RGB(.72,.72,.72),alpha=.32,label="")
-        vline!(p,[lower,upper];color=RGB(.42,.42,.42),linestyle=:dot,
+    for (index,transition) in enumerate(transition_data)
+        vspan!(p,[transition.lower,transition.upper];color=RGB(.72,.72,.72),alpha=.32,label="")
+        vline!(p,[transition.lower,transition.upper];color=RGB(.42,.42,.42),linestyle=:dot,
             linewidth=.8,label="")
+        plot!(p,[transition.z75,transition.z25],[transition.n75,transition.n25];
+            color=RGB(.75,.12,.12),linestyle=:dash,linewidth=2.0,
+            label=index==1 ? L"25\mathrm{--}75\%\ emptying\ slope" : "")
     end
     plot!(p,z,mean;yerror=sem,color=:black,marker=:circle,
         markercolor=:white,markerstrokecolor=:black,markersize=4,
@@ -186,9 +195,9 @@ function nz_panel(z,mean,sem,title_text,letter,xlims,xticks,bands)
     p
 end
 
-p1=nz_panel(cb7.z,cb7.mean,cb7_sem,"CB7","a",(-10,10),-10:5:10,cb7_bands)
-p2=nz_panel(oa_curve.z,oa_curve.mean,oa_curve.sem,"OA","b",(-3,11),-2:2:10,oa_bands)
-p3=nz_panel(cd.z,cd.mean,cd_sem,"restrained β-CD","c",(-10,10),-10:5:10,cd_bands)
+p1=nz_panel(cb7_curve.z,cb7_curve.mean,cb7_curve.sem,"CB7","a",(-10,10),-10:5:10,cb7_transitions)
+p2=nz_panel(oa_curve.z,oa_curve.mean,oa_curve.sem,"OA","b",(-3,11),-2:2:10,oa_transitions)
+p3=nz_panel(cd.z,cd.mean,cd_sem,"restrained β-CD","c",(-10,10),-10:5:10,cd_transitions)
 nz=plot(p1,p2,p3;layout=(1,3),size=(1800,560),dpi=600,
     left_margin=6Plots.mm,right_margin=5Plots.mm,bottom_margin=7Plots.mm,top_margin=5Plots.mm)
 for ext in ("png","pdf","svg"); savefig(nz,joinpath(OUTPUT_DIR,"figure5_mean_occupancy_vs_z.$ext")); end
@@ -262,7 +271,7 @@ paired_distribution_figure(cd,CD_SELECTED,"restrained β-CD";stem="betacd_pn_lnp
 
 # Machine-readable audit table.
 XLSX.openxlsx(joinpath(DERIVED_DIR,"occupancy_moments.xlsx"),mode="w") do xf
-    records=(("CB7",cb7.z,cb7.mean,cb7.sd,cb7_sem,"cluster bootstrap"),
+    records=(("CB7",cb7_curve.z,cb7_curve.mean,cb7_curve.sd,cb7_curve.sem,"rerun direct tabulation"),
              ("OA",oa_curve.z,oa_curve.mean,oa_curve.sd,oa_curve.sem,"source std err column"),
              ("restrained beta-CD",cd.z,cd.mean,cd.sd,cd_sem,"cluster bootstrap"))
     for (idx,(name,z,mean,sd,sem,sem_source)) in enumerate(records)

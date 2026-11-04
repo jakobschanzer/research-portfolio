@@ -109,7 +109,9 @@ The ring-geometry executable establishes the structural restraint targets; it do
 
 The drying analysis used the 100 ns conventional umbrella trajectories generated independently for every biased window **without replica exchange**. It did not use the REMD trajectories or the unbiased JANAL trajectories. Configurations were sorted by their instantaneous host–guest coordinate into 0.4 Å bins.
 
-The conditional distribution `P(N|z)` gives the probability of observing `N` cavity waters at guest position `z`. Mean occupancy and fluctuations are computed from that distribution. A 25–75% transition width is obtained by linear interpolation of the fraction-empty curve between adjacent 0.4 Å bins. “Sharp” and “gradual” refer to equilibrium change along the binding coordinate, not a kinetic rate.
+The conditional distribution `P(N|z)` gives the probability of observing `N` cavity waters at guest position `z`. Mean occupancy and fluctuations are computed from that distribution. For the corrected CB7 rerun, the directly tabulated mean and SEM are used for the mean-occupancy figure and transition analysis; moments of the rerun `P(N|z)` reproduce that mean to rounding. A 25–75% transition width is obtained by linear interpolation of the fraction-empty curve between adjacent 0.4 Å bins. The plotted gray band spans this interval, and the dashed segment joins the 25% and 75% occupancy levels to show the secant emptying slope. “Sharp” and “gradual” refer to equilibrium change along the binding coordinate, not a kinetic rate.
+
+Resolved CB7 bimodality is assigned only when a low-occupancy local maximum (`N ≤ 2`) and a high-occupancy local maximum (`N ≥ 4`) each reach at least 10% of the global peak and are separated by an intervening minimum below both peaks. Under this explicit criterion, the corrected distributions are bimodal at `z = 3.6` and `4.0 Å`; neighboring windows are classified as a single basin or shoulder. Quadratic fits use unweighted least squares on `ln P(N|z)` over the identified wet-basin mode minus one occupancy through mode plus two occupancies.
 
 ## Uncertainty
 
