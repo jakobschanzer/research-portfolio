@@ -12,6 +12,7 @@ APPROVED_DATA_FILES = {
     "data/processed/direct_residual_decomposition.xlsx",
     "data/processed/spatial_maps.xlsx",
     "data/processed/occupancy_along_binding_coordinate.xlsx",
+    "data/processed/mean_occupancy_vs_z.xlsx",
     "data/processed/cb7_occupancy_rerun.xlsx",
     "data/processed/hydrogen_bond_temperature.xlsx",
     "data/processed/unbiased_occupancy.xlsx",

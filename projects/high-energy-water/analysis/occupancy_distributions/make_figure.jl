@@ -8,7 +8,7 @@ using Printf
 const HERE = @__DIR__
 const PROJECT_ROOT = normpath(joinpath(HERE, "..", ".."))
 const INPUT = joinpath(PROJECT_ROOT, "data", "processed", "occupancy_along_binding_coordinate.xlsx")
-const CB7_INPUT = joinpath(PROJECT_ROOT, "data", "processed", "cb7_occupancy_rerun.xlsx")
+const MEAN_INPUT = joinpath(PROJECT_ROOT, "data", "processed", "mean_occupancy_vs_z.xlsx")
 const SVG_OUT = joinpath(PROJECT_ROOT, "figures", "figure6_occupancy_distributions.svg")
 const AUDIT_OUT = joinpath(PROJECT_ROOT, "data", "derived", "pn_fattail_fits.xlsx")
 
@@ -48,16 +48,11 @@ function probability_mean(n, p)
     sum(n .* normalized)
 end
 
-function read_oa(sheet)
-    curve_z = Float64[sheet[row, 1] for row in 4:37]
-    curve_mean = Float64[sheet[row, 2] for row in 4:37]
-    order = sortperm(curve_z)
-    curve_z, curve_mean = curve_z[order], curve_mean[order]
-
-    n = Float64[sheet[row, 7] for row in 4:13]
+function read_oa(sheet, curve_z, curve_mean)
+    n = Float64[sheet[row, 2] for row in 3:12]
     probability_columns = Vector{Vector{Float64}}()
-    for column in 8:39
-        values = [sheet[row, column] for row in 4:13]
+    for column in 3:34
+        values = [sheet[row, column] for row in 3:12]
         if all(!ismissing, values) && sum(Float64.(values)) > 0
             push!(probability_columns, Float64.(values))
         end
@@ -77,15 +72,22 @@ function read_oa(sheet)
     OccupancyData(actual_z, n, p)
 end
 
-cb7 = nothing; oa = nothing; cd = nothing
-XLSX.openxlsx(CB7_INPUT) do workbook
-    global cb7 = read_host(workbook["P(N|z)"];
-        header_row=1, first_col=2, last_col=27, n_rows=10, explicit_n_col=1)
+oa_curve_z = Float64[]; oa_curve_mean = Float64[]
+XLSX.openxlsx(MEAN_INPUT) do workbook
+    sheet = workbook["OA"]
+    global oa_curve_z = Float64[sheet[row, 1] for row in 2:35]
+    global oa_curve_mean = Float64[sheet[row, 2] for row in 2:35]
 end
+order = sortperm(oa_curve_z)
+oa_curve_z, oa_curve_mean = oa_curve_z[order], oa_curve_mean[order]
+
+cb7 = nothing; oa = nothing; cd = nothing
 XLSX.openxlsx(INPUT) do workbook
-    global oa = read_oa(workbook["OA"])
-    global cd = read_host(workbook["CD_Restrained"];
-        header_row=3, first_col=9, last_col=59, n_rows=10, explicit_n_col=8)
+    global cb7 = read_host(workbook["CB7"];
+        header_row=2, first_col=2, last_col=27, n_rows=10)
+    global oa = read_oa(workbook["OA"], oa_curve_z, oa_curve_mean)
+    global cd = read_host(workbook["Beta"];
+        header_row=2, first_col=3, last_col=53, n_rows=11, explicit_n_col=2)
 end
 
 function selected_distribution(data, z_value)
@@ -131,7 +133,7 @@ function quadratic_fit(n, probability)
         !isempty(wet_candidates) && coefficients[1] < 0)
 end
 
-"""Identify resolved low- and high-occupancy basins separated by a probability minimum."""
+"""Identify resolved low- and high-occupancy basins using the documented 80% valley test."""
 function state_classification(n, probability)
     threshold = 0.10maximum(probability)
     local_maxima = Int[]
@@ -147,18 +149,20 @@ function state_classification(n, probability)
         return (classification="single basin/shoulder", low_index=0, high_index=0,
             valley_index=0, valley_ratio=NaN)
     end
-    low = low_candidates[argmax(probability[low_candidates])]
-    high = high_candidates[argmax(probability[high_candidates])]
-    low < high || return (classification="single basin/shoulder", low_index=0,
+    candidates = NamedTuple[]
+    for low in low_candidates, high in high_candidates
+        low < high || continue
+        between = collect(low+1:high-1)
+        isempty(between) && continue
+        valley = between[argmin(probability[between])]
+        ratio = probability[valley] / min(probability[low], probability[high])
+        ratio <= 0.80 || continue
+        push!(candidates, (classification="resolved bimodal", low_index=low,
+            high_index=high, valley_index=valley, valley_ratio=ratio))
+    end
+    isempty(candidates) && return (classification="single basin/shoulder", low_index=0,
         high_index=0, valley_index=0, valley_ratio=NaN)
-    between = collect(low+1:high-1)
-    isempty(between) && return (classification="single basin/shoulder", low_index=0,
-        high_index=0, valley_index=0, valley_ratio=NaN)
-    valley = between[argmin(probability[between])]
-    ratio = probability[valley] / min(probability[low], probability[high])
-    resolved = probability[valley] < min(probability[low], probability[high])
-    (classification=resolved ? "resolved bimodal" : "single basin/shoulder",
-        low_index=low, high_index=high, valley_index=valley, valley_ratio=ratio)
+    candidates[argmin(getfield.(candidates, :valley_ratio))]
 end
 
 function image_uri(path)
@@ -357,7 +361,7 @@ push!(parts, "<text x=\"18\" y=\"$beta_title_y\" class=\"panel\">c</text><text x
 push!(parts, "<text x=\"$(LEFT+210)\" y=\"$(BETA_NEG_Y-13)\" class=\"branch\">negative-z, narrower primary portal</text>")
 push!(parts, "<text x=\"$(LEFT+210)\" y=\"$(BETA_POS_Y-13)\" class=\"branch\">positive-z, wider secondary portal</text>")
 
-negative_windows = [-10.0, -4.4, -3.6, -2.8, -2.0]
+negative_windows = [-10.0, -5.2, -4.8, -3.6, -2.0]
 positive_windows = [10.0, 4.4, 3.6, 2.8, 2.0]
 for column in 1:5
     node_svg(parts, records, "restrained β-CD", cd, column, BETA_NEG_Y,
@@ -397,9 +401,59 @@ XLSX.openxlsx(AUDIT_OUT, mode="w") do workbook
             state.high_index == 0 ? missing : cb7.n[state.high_index],
             state.valley_index == 0 ? missing : cb7.n[state.valley_index],
             state.valley_ratio,
-            "local low mode N<=2 and high mode N>=4; each >=10% of global peak; intervening minimum below both peaks"]
+            "low mode N<=2 and high mode N>=4; each >=10% of global peak; intervening valley <=80% of smaller peak"]
         for (column, value) in enumerate(values)
             states[j + 1, column] = value
+        end
+    end
+    beta_states = XLSX.addsheet!(workbook, "Beta state classification")
+    beta_headers = ["z_A", "mean_N", "variance_N", "global_mode_N", "classification",
+        "low_mode_N", "high_mode_N", "valley_N", "valley_to_smaller_peak_ratio",
+        "criterion"]
+    beta_states["A1:J1"] = reshape(beta_headers, 1, :)
+    for (j, z) in enumerate(cd.z)
+        probability = cd.p[:, j] ./ sum(cd.p[:, j])
+        mean_n = probability_mean(cd.n, probability)
+        variance_n = sum((cd.n .- mean_n).^2 .* probability)
+        state = state_classification(cd.n, probability)
+        values = Any[z, mean_n, variance_n, cd.n[argmax(probability)], state.classification,
+            state.low_index == 0 ? missing : cd.n[state.low_index],
+            state.high_index == 0 ? missing : cd.n[state.high_index],
+            state.valley_index == 0 ? missing : cd.n[state.valley_index],
+            state.valley_ratio,
+            "low mode N<=2 and high mode N>=4; each >=10% of global peak; intervening valley <=80% of smaller peak"]
+        for (column, value) in enumerate(values)
+            beta_states[j + 1, column] = value
+        end
+    end
+    beta_selection = XLSX.addsheet!(workbook, "Beta panel selection")
+    beta_selection["A1:G1"] = reshape(["z_A", "portal", "mean_N", "variance_N", "mode_N",
+        "state_classification", "selection_reason"], 1, :)
+    selection_reasons = Dict(
+        -10.0 => "separated wet reference",
+        -5.2 => "enhanced low-N tail before the main population shift; modal occupancy N=4",
+        -4.8 => "largest local N(z) change; broad single basin with modal occupancy N=3",
+        -3.6 => "continuous intermediate state with modal occupancy N=2",
+        -2.0 => "near-dry state with modal occupancy N=1",
+        0.0 => "shared cavity-centered state with modal occupancy N=0 and residual N>0 probability",
+        2.0 => "near-dry state with modal occupancy N=1",
+        2.8 => "continuous intermediate state with modal occupancy N=2",
+        3.6 => "maximum-variance positive-z panel; single basin with modal occupancy N=3",
+        4.4 => "wet-side transition panel with modal occupancy N=4",
+        10.0 => "separated wet reference",
+    )
+    selected_beta = [-10.0, -5.2, -4.8, -3.6, -2.0, 0.0, 2.0, 2.8, 3.6, 4.4, 10.0]
+    for (row, z) in enumerate(selected_beta)
+        j = argmin(abs.(cd.z .- z))
+        probability = cd.p[:, j] ./ sum(cd.p[:, j])
+        mean_n = probability_mean(cd.n, probability)
+        variance_n = sum((cd.n .- mean_n).^2 .* probability)
+        state = state_classification(cd.n, probability)
+        portal = z < 0 ? "negative-z primary" : z > 0 ? "positive-z secondary" : "shared center"
+        values = Any[z, portal, mean_n, variance_n, cd.n[argmax(probability)],
+            state.classification, selection_reasons[z]]
+        for (column, value) in enumerate(values)
+            beta_selection[row + 1, column] = value
         end
     end
     notes = XLSX.addsheet!(workbook, "Method")
@@ -410,8 +464,9 @@ XLSX.openxlsx(AUDIT_OUT, mode="w") do workbook
         "fit window" => "wet-basin mode minus one occupancy through mode plus two occupancies; no fit is displayed when a wet basin is absent",
         "model" => "ln P_fit = a N^2 + b N + c, unweighted least squares",
         "fat-tail marker" => "low-N observed point at least 0.75 natural-log units above the extrapolated quadratic fit",
-        "CB7 bimodality" => "resolved only where significant low- and high-occupancy local maxima are separated by an intervening probability minimum; all rerun windows are audited",
+        "bimodality criterion" => "low-N mode at N <= 2 and high-N mode at N >= 4; each >=10% of the global peak; intervening valley <=80% of the smaller peak",
         "CB7 rerun result" => "resolved bimodality at z = 3.6 and 4.0 A; adjacent windows are classified as single basin/shoulder",
+        "beta-CD result" => "all 51 coordinates are single basin/shoulder under the documented criterion; no resolved two-state panel",
         "OA z=10 display" => "uses the equivalent separated-state P(N|z) distribution sampled at z=9.6 A, as previously authorized",
     ]
     for (row, pair) in enumerate(method_rows)

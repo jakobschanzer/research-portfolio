@@ -17,11 +17,11 @@ It also runs a publication-boundary check that permits only the reviewed process
 - Each plot reads data from a named, versioned workbook rather than hard-coded curves.
 - The spatial-map bulk hydrogen-bond references are three documented scalars extracted from the corresponding 25 °C production workbooks.
 - Occupancy-transition widths are written to a derived audit workbook with definitions and uncertainty assumptions.
-- The corrected CB7 `P(N|z)` moments reproduce the directly tabulated rerun `⟨N⟩(z)` values to within `10⁻³` water before figures are generated.
-- CB7 state classification is evaluated across every rerun distance window and exported with the local modes, intervening minimum, and criterion; resolved bimodality occurs only at 3.6 and 4.0 Å.
+- The corrected CB7 and β-CD `P(N|z)` moments reproduce their directly tabulated rerun `⟨N⟩(z)` values to within `2.68 × 10⁻⁴` water before figures are generated.
+- State classification is evaluated across every corrected CB7 and β-CD distance window and exported with the local modes, intervening valley, and criterion. CB7 is resolved bimodal only at 3.6 and 4.0 Å; none of the 51 β-CD coordinates is resolved bimodal.
 - OA occupancy alignment is exported as an audit sheet so plotted coordinates can be compared with tabulated means.
 - Figure 6 uses one explicit coordinate convention: negative `z` is left and positive `z` is right. CB7 and OA use the positive-`z` approach; β-CD shows its negative- and positive-portal branches on their corresponding sides.
-- Wet-basin quadratic fits, enhanced low-occupancy points, and CB7 bimodality classifications in Figure 6 are exported to `data/derived/pn_fattail_fits.xlsx` for numerical audit.
+- Wet-basin quadratic fits, enhanced low-occupancy points, complete CB7 and β-CD classifications, and the revised β-CD panel selection are exported to `data/derived/pn_fattail_fits.xlsx` for numerical audit.
 - Generated plots use redundant markers/line styles and grayscale-compatible encodings.
 
 ## Known limitations

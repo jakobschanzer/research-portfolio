@@ -20,7 +20,7 @@ This private portfolio highlights work across statistical mechanics, molecular s
 
 The project tests a common mechanistic claim in molecular recognition: that confined water is uniformly energetically unfavorable and that releasing it necessarily drives binding. It combines spatial thermodynamic maps, occupancy fluctuations, hydrogen-bond statistics, temperature response, and binding-coordinate analysis for three manuscript systems: **CB7, OA, and β-cyclodextrin**.
 
-The central result is more nuanced. Populated hydration sites are, on average, enthalpically stabilized. Sharp collective drying occurs in rigid hydrophobic cavities, but drying alone is not evidence that expelling “high-energy water” drives association.
+The central result is more nuanced. Populated hydration sites are, on average, enthalpically stabilized. CB7 and OA show sharp collective drying, whereas restrained β-cyclodextrin dehydrates continuously and retains a small residual occupancy at the cavity center. Drying alone is not evidence that expelling “high-energy water” drives association.
 
 [Explore the project, figures, physics, and code →](projects/high-energy-water/README.md)
 

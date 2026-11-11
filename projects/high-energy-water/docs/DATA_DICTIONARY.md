@@ -7,13 +7,14 @@ All checked-in workbooks are compact, processed inputs for the three disclosed m
 | `data/processed/pmf_thermodynamics.xlsx` | WHAM-reconstructed PMFs and constant-heat-capacity-derived enthalpy, entropy, and heat-capacity profiles from the REMD/umbrella dataset | `analysis/pmf_decomposition/` |
 | `data/processed/direct_residual_decomposition.xlsx` | Direct and operational residual components along the umbrella coordinate | `analysis/pmf_decomposition/` |
 | `data/processed/spatial_maps.xlsx` | Axial–radial density, hydrogen-bond, and enthalpy grids derived from the unbiased simulations | `analysis/spatial_maps/` |
-| `data/processed/occupancy_along_binding_coordinate.xlsx` | Consolidated conditional occupancy distributions from the 100 ns conventional umbrella windows without replica exchange; its CB7 distribution block has been updated to the corrected rerun | `analysis/occupancy/` |
-| `data/processed/cb7_occupancy_rerun.xlsx` | Authoritative corrected CB7 mean, SEM, and `P(N|z)` distributions; includes provenance and a moment-consistency statement | `analysis/occupancy/`, `analysis/occupancy_distributions/` |
+| `data/processed/mean_occupancy_vs_z.xlsx` | Authoritative corrected `⟨N⟩(z)` and SEM tables for CB7, OA, and restrained β-CD; the β-CD sheet comes from the frame-matched coordinate/water-count rerun | `analysis/occupancy/` |
+| `data/processed/occupancy_along_binding_coordinate.xlsx` | Consolidated corrected `P(N|z)` distributions from the 100 ns conventional umbrella windows without replica exchange | `analysis/occupancy/`, `analysis/occupancy_distributions/` |
+| `data/processed/cb7_occupancy_rerun.xlsx` | Retained corrected CB7 source package and provenance record; consolidated current inputs are in the two workbooks above | provenance only |
 | `data/processed/hydrogen_bond_temperature.xlsx` | Temperature-dependent hydrogen-bond summaries from the unbiased simulations | `analysis/temperature_response/` |
 | `data/processed/unbiased_occupancy.xlsx` | Authoritative occupancy values from the independent unbiased simulations, including the revised unrestrained β-CD 25 °C run | `analysis/temperature_response/` |
 | `data/derived/water_occupancy_by_host.xlsx` | Host-level occupancy verification and block SEMs; the superseded unrestrained β-CD 25 °C uncertainty is intentionally blank | `analysis/temperature_response/` |
-| `data/derived/betacd_cluster_bootstrap_sem.tsv` | Restrained β-CD cluster-bootstrap occupancy standard errors | `analysis/occupancy/` |
-| `data/derived/pn_fattail_fits.xlsx` | Generated audit of wet-basin quadratic fits, low-occupancy enhancement, and the all-window CB7 state classification | `analysis/occupancy_distributions/` |
+| `data/derived/betacd_cluster_bootstrap_sem.tsv` | Retained β-CD cluster-bootstrap SEM table from the preceding analysis version | provenance only |
+| `data/derived/pn_fattail_fits.xlsx` | Generated audit of wet-basin quadratic fits, low-occupancy enhancement, all-window CB7 and β-CD state classifications, and the selected β-CD panel sequence | `analysis/occupancy_distributions/` |
 
 ## Units
 

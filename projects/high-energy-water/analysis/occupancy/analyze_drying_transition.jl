@@ -7,33 +7,17 @@ using Statistics
 
 const HERE = @__DIR__
 const PROJECT_ROOT = normpath(joinpath(HERE, "..", ".."))
-const INPUT = joinpath(PROJECT_ROOT, "data", "processed", "occupancy_along_binding_coordinate.xlsx")
-const CB7_INPUT = joinpath(PROJECT_ROOT, "data", "processed", "cb7_occupancy_rerun.xlsx")
+const INPUT = joinpath(PROJECT_ROOT, "data", "processed", "mean_occupancy_vs_z.xlsx")
 const OUTPUT = joinpath(PROJECT_ROOT, "data", "derived", "drying_transition_analysis.xlsx")
 
 parse_z(value) = parse(Float64, replace(string(value), "z=" => ""))
 
-function moments(n, probability)
-    p = probability ./ sum(probability)
-    sum(n .* p)
-end
-
-function read_probability_curve(sheet; header_row, first_col, last_col, first_row, n_values)
-    z = Float64[parse_z(sheet[header_row, col]) for col in first_col:last_col]
-    mean_n = Float64[]
-    for col in first_col:last_col
-        probability = Float64[
-            ismissing(sheet[first_row + row - 1, col]) ? 0.0 : sheet[first_row + row - 1, col]
-            for row in eachindex(n_values)
-        ]
-        push!(mean_n, moments(n_values, probability))
-    end
-    z, mean_n
-end
-
-function read_sem(path)
-    raw = readdlm(path, '\t', Float64; skipstart=1)
-    Dict(raw[row, 1] => raw[row, 2] for row in axes(raw, 1))
+function read_curve(sheet, first_row, last_row; sem_col)
+    z = Float64[sheet[row, 1] for row in first_row:last_row]
+    mean_n = Float64[sheet[row, 2] for row in first_row:last_row]
+    sem_n = Float64[sheet[row, sem_col] for row in first_row:last_row]
+    order = sortperm(z)
+    z[order], mean_n[order], sem_n[order]
 end
 
 function crossing(distance, occupancy, target; nominal=nothing)
@@ -134,46 +118,22 @@ end
 
 cb7_z = Float64[]; cb7_mean = Float64[]; cb7_sem = Float64[]
 oa_z = Float64[]; oa_mean = Float64[]; oa_sem = Float64[]
-cd_z = Float64[]; cd_mean = Float64[]
+cd_z = Float64[]; cd_mean = Float64[]; cd_sem = Float64[]
 
-# The rerun CB7 workbook directly tabulates mean occupancy and its SEM on the
-# complete coordinate axis. Analyze the non-negative branch because CB7 is
-# symmetric, rather than reconstructing the curve from the superseded P(N|z).
-XLSX.openxlsx(CB7_INPUT) do workbook
-    sheet = workbook["Mean occupancy"]
-    for row in 2:52
-        z = Float64(sheet[row, 1])
-        z < 0 && continue
-        push!(cb7_z, z)
-        push!(cb7_mean, Float64(sheet[row, 2]))
-        push!(cb7_sem, Float64(sheet[row, 3]))
-    end
-end
-
+# The corrected mean-occupancy workbook directly tabulates all three curves.
+# β-CD values come from the frame-matched host–guest coordinate and water-count
+# rerun, so the transition analysis no longer reconstructs <N>(z) from P(N|z).
 XLSX.openxlsx(INPUT) do workbook
-    oa = workbook["OA"]
-    global oa_z = Float64[oa[row, 1] for row in 4:37]
-    global oa_mean = Float64[oa[row, 2] for row in 4:37]
-    global oa_sem = Float64[oa[row, 4] for row in 4:37]
-    order = sortperm(oa_z)
-    global oa_z, oa_mean, oa_sem = oa_z[order], oa_mean[order], oa_sem[order]
-
-    cd = workbook["CD_Restrained"]
-    n_values = Float64[cd[row, 8] for row in 4:13]
-    global cd_z, cd_mean = read_probability_curve(
-        cd;
-        header_row=3, first_col=9, last_col=59, first_row=4,
-        n_values=n_values,
-    )
+    global cb7_z, cb7_mean, cb7_sem = read_curve(workbook["CB7"], 2, 52; sem_col=3)
+    global oa_z, oa_mean, oa_sem = read_curve(workbook["OA"], 2, 35; sem_col=5)
+    global cd_z, cd_mean, cd_sem = read_curve(workbook["restrained beta-CD"], 2, 52; sem_col=5)
 end
-
-cd_sem_lookup = read_sem(joinpath(PROJECT_ROOT, "data", "derived", "betacd_cluster_bootstrap_sem.tsv"))
-cd_sem = Float64[cd_sem_lookup[z] for z in cd_z]
 
 branches = Branch[
     Branch(
-        "CB7", "symmetric portal", cb7_z, cb7_z, cb7_mean, cb7_sem,
-        cb7_z .>= 6.0, cb7_z .<= 0.8, 1.0,
+        "CB7", "symmetric portal", cb7_z[cb7_z .>= 0], cb7_z[cb7_z .>= 0],
+        cb7_mean[cb7_z .>= 0], cb7_sem[cb7_z .>= 0],
+        cb7_z[cb7_z .>= 0] .>= 6.0, cb7_z[cb7_z .>= 0] .<= 0.8, 1.0,
     ),
     Branch(
         "OA", "open portal", oa_z[oa_z .>= 0], oa_z[oa_z .>= 0],
@@ -254,7 +214,8 @@ XLSX.openxlsx(OUTPUT, mode="w") do workbook
         "wet plateau" => "arithmetic mean over |z| >= 6 A on the relevant branch",
         "dry plateau" => "arithmetic mean over |z| <= 0.8 A on the relevant branch",
         "uncertainty" => "approximate pointwise-SEM propagation with 50,000 independent Gaussian draws; covariance between z bins was unavailable",
-        "CB7 source" => "rerun direct mean_N and SEM_N from cb7_occupancy_rerun.xlsx; non-negative branch analyzed because CB7 is symmetric",
+        "source" => "corrected direct mean_N and SEM_N from mean_occupancy_vs_z.xlsx; the non-negative CB7 branch is analyzed because CB7 is symmetric",
+        "beta-CD source" => "frame-matched host-guest coordinate and water-count rerun; negative- and positive-z portals analyzed independently",
         "interpretation" => "sharp/gradual refers to change with guest position, not kinetic drying rate",
     ]
     for (index, pair) in enumerate(definitions)
